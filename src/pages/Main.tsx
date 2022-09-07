@@ -23,6 +23,7 @@ import { getImportant, getTodayAndTomorrowLessons } from "../hooks/Api";
 import moment from "moment";
 import parse from "html-react-parser";
 import "moment/locale/ru";
+import Linkify from "react-linkify";
 
 function Main() {
 	const toast = useToast();
@@ -175,7 +176,7 @@ function Main() {
 				</Stack>
 				{lesson.homework?.text && (
 					<Text fontSize={14} color="#AAAAAA">
-						{lesson.homework.text}
+						<Linkify>{lesson.homework.text}</Linkify>
 					</Text>
 				)}
 			</Stack>
@@ -205,7 +206,9 @@ function Main() {
 							</Text>
 						</Stack>
 					</Stack>
-					<Text>{parse(item.content.text)}</Text>
+					<Text>
+						<Linkify>{parse(item.content.text)}</Linkify>
+					</Text>
 				</Stack>
 				{item.content.files && (
 					<Stack direction="column" spacing="5px">

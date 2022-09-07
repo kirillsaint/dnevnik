@@ -1,3 +1,11 @@
 .grades::-webkit-scrollbar {
 	width: 0;
 }
+a {
+	color: #0072b2 !important;
+}
+
+a:hover {
+	text-decoration: none;
+	color: #333333 !important;
+}
