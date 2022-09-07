@@ -206,7 +206,7 @@ function Main() {
 							</Text>
 						</Stack>
 					</Stack>
-					<Text>
+					<Text className="news-text">
 						<Linkify>{parse(item.content.text)}</Linkify>
 					</Text>
 				</Stack>

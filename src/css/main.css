@@ -1,11 +1,11 @@
 .grades::-webkit-scrollbar {
 	width: 0;
 }
-a {
+.news-text a {
 	color: #0072b2 !important;
 }
 
-a:hover {
+.news-text a:hover {
 	text-decoration: none;
 	color: #333333 !important;
 }
