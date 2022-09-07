@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.dfab3d63.css","mappings":"oGAAA,2BACC,OACD,CACA,aACC,uBACD,CAEA,mBAEC,oBAAyB,CADzB,oBAED","sources":["css/main.css"],"sourcesContent":[".grades::-webkit-scrollbar {\n\twidth: 0;\n}\n.news-text a {\n\tcolor: #0072b2 !important;\n}\n\n.news-text a:hover {\n\ttext-decoration: none;\n\tcolor: #333333 !important;\n}\n"],"names":[],"sourceRoot":""}
