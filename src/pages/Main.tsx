@@ -62,8 +62,13 @@ function Main() {
 			}
 			try {
 				const lessons = await getTodayAndTomorrowLessons();
-				setTodayLessons(lessons.days[0].lessons);
-				setTomorrowLessons(lessons.days[1].lessons);
+				if (lessons.today.length !== 0) {
+					setTodayLessons(lessons.today[0].lessons);
+				}
+
+				if (lessons.tomorrow.length !== 0) {
+					setTomorrowLessons(lessons.tomorrow[0].lessons);
+				}
 			} catch (e) {
 				toast({
 					title: "Произошла ошибка при получении расписания",
@@ -79,6 +84,7 @@ function Main() {
 		};
 
 		getInfo();
+		// eslint-disable-next-line
 	}, []);
 
 	const CustomTab = React.forwardRef((props: any, ref: any) => {
@@ -287,11 +293,25 @@ function Main() {
 								</TabList>
 								<TabPanels>
 									<TabPanel padding={0} paddingBottom={5}>
+										{todayLessons.length === 0 && (
+											<Center paddingTop={5}>
+												<Text color="gray.500" fontWeight="bold">
+													Уроков не найдено
+												</Text>
+											</Center>
+										)}
 										{todayLessons.map((item: any) => (
 											<Lesson lesson={item} />
 										))}
 									</TabPanel>
 									<TabPanel padding={0} paddingBottom={5}>
+										{tomorrowLessons.length === 0 && (
+											<Center paddingTop={5}>
+												<Text color="gray.500" fontWeight="bold">
+													Уроков не найдено
+												</Text>
+											</Center>
+										)}
 										{tomorrowLessons.map((item: any) => (
 											<Lesson lesson={item} />
 										))}

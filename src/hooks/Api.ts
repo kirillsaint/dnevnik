@@ -20,6 +20,8 @@ async function getContext() {
 async function getTodayAndTomorrowLessons() {
 	let date: any = moment().format("YYYY-MM-DD 00:00:00");
 	date = moment(date).unix();
+	let tommorowDate: any = moment().add(1, "days").format("YYYY-MM-DD 00:00:00");
+	tommorowDate = moment(tommorowDate).unix();
 	let afterTommorowDate: any = moment()
 		.add(2, "days")
 		.format("YYYY-MM-DD 00:00:00");
@@ -31,8 +33,8 @@ async function getTodayAndTomorrowLessons() {
 
 	const groupId = BigInt(context.contextPersons[0].group.id) - BigInt(112);
 
-	const { data: res } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${groupId}/diary?startDate=${date}&finishDate=${afterTommorowDate}`,
+	const { data: today } = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${groupId}/diary?startDate=${date}&finishDate=${tommorowDate}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
@@ -40,7 +42,16 @@ async function getTodayAndTomorrowLessons() {
 		}
 	);
 
-	return res;
+	const { data: tomorrow } = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${groupId}/diary?startDate=${tommorowDate}&finishDate=${afterTommorowDate}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+
+	return { today: today.days, tomorrow: tomorrow.days };
 }
 
 async function getImportant() {
