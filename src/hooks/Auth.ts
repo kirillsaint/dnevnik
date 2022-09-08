@@ -25,7 +25,7 @@ function setAuth(user: UserData) {
 			middleName: user.middleName,
 			schoolName: user.schoolName,
 		}),
-		{ expires: 14 }
+		{ expires: 300 }
 	);
 }
 
