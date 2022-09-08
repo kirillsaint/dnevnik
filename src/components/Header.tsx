@@ -1,10 +1,12 @@
 import React, { ReactNode } from "react";
 import { Box, Link, Stack, Center, Heading, Text } from "@chakra-ui/react";
-import { Link as RLink, useLocation } from "react-router-dom";
+import { Link as RLink, useLocation, useNavigate } from "react-router-dom";
 //import { CheckAuth, Logout } from "../hooks/Auth";
-import { FaHome } from "react-icons/fa";
-import { IoAnalytics } from "react-icons/io5";
-import { AiOutlineCalendar } from "react-icons/ai";
+import {
+	Icon28HomeOutline,
+	Icon28GraphOutline,
+	Icon28ListOutline,
+} from "@vkontakte/icons";
 
 const Logo = ({ isMobile }: { isMobile: boolean }) => {
 	let name: string = "";
@@ -90,28 +92,53 @@ function MobileMenu() {
 		if (location.pathname === to) {
 			tColor = "black";
 		}
+		let navigate = useNavigate();
 		return (
-			<Box w="100%" as={RLink} to={to}>
-				<Stack m="10px" direction="column" color={tColor} spacing="1px">
+			<Box
+				w="100%"
+				onClick={() => {
+					navigate(to);
+				}}
+				_active={{
+					bgColor: "rgba(0,0,0,.04)",
+					"transition-property":
+						"background-color,border-color,color,fill,stroke,opacity,box-shadow,transform",
+					"transition-duration": "200ms",
+				}}
+			>
+				<Stack
+					position="relative"
+					top="2px"
+					direction="column"
+					color={tColor}
+					spacing="1px"
+				>
 					<Center>{icon}</Center>
 					<Center>
-						<Text>{name}</Text>
+						<Text fontSize="12px">{name}</Text>
 					</Center>
 				</Stack>
 			</Box>
 		);
 	};
 	return (
-		<Box w="full" bgColor="white" bottom="0" position="fixed" zIndex={3}>
+		<Box
+			w="full"
+			bgColor="white"
+			bottom="0"
+			height="48px"
+			position="fixed"
+			zIndex={3}
+		>
 			<Stack direction="row" spacing="0px">
-				<MenuButton icon={<FaHome size={24} />} name="Главная" to="/" />
+				<MenuButton icon={<Icon28HomeOutline />} name="Главная" to="/" />
 				<MenuButton
-					icon={<IoAnalytics size={24} />}
+					icon={<Icon28GraphOutline />}
 					name="Успеваемость"
 					to="/performance"
 				/>
 				<MenuButton
-					icon={<AiOutlineCalendar size={24} />}
+					icon={<Icon28ListOutline />}
 					name="Расписание"
 					to="/schedule"
 				/>
