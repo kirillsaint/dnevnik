@@ -41,6 +41,7 @@ const UPHeader = ({ isMobile }: { isMobile: boolean }) => (
 		padding={3}
 		paddingLeft={[3, 10]}
 		paddingRight={[3, 10]}
+		userSelect="none"
 	>
 		<Logo isMobile={isMobile} />
 		{!isMobile && (
