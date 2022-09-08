@@ -35,7 +35,7 @@ function App() {
 				paddingLeft={[3, 10]}
 				paddingRight={[3, 10]}
 				zIndex={2}
-				paddingTop={auth ? 20 : 0}
+				paddingTop={auth ? [14, 20] : 0}
 				paddingBottom={auth ? 20 : 0}
 			>
 				<Routes>

@@ -54,6 +54,26 @@ async function getTodayAndTomorrowLessons() {
 	return { today: today.days, tomorrow: tomorrow.days };
 }
 
+async function getLessonInfo(lessonId: number) {
+	const context = await getContext();
+	const user = getUser();
+
+	if (!user) return { error: "not auth" };
+
+	const groupId = BigInt(context.contextPersons[0].group.id) - BigInt(112);
+
+	const { data: res } = await axios.get(
+		`https://api.dnevnik.ru/mobile/v6/persons/${user.personId}/groups/${groupId}/lessons/${lessonId}/lessonDetails?`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+
+	return res;
+}
+
 async function getImportant() {
 	// let date: any = moment().format("YYYY-MM-DD 00:00:00");
 	// date = moment(date).unix();
@@ -78,4 +98,4 @@ async function getImportant() {
 	return res;
 }
 
-export { getContext, getImportant, getTodayAndTomorrowLessons };
+export { getContext, getImportant, getTodayAndTomorrowLessons, getLessonInfo };

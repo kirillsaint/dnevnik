@@ -15,11 +15,17 @@ import {
 	useTab,
 	Button,
 	useToast,
+	Skeleton,
+	SkeletonText,
 } from "@chakra-ui/react";
 import { getUser, UserData } from "../hooks/Auth";
 import Loader from "../components/Loader";
 import "../css/main.css";
-import { getImportant, getTodayAndTomorrowLessons } from "../hooks/Api";
+import {
+	getImportant,
+	getTodayAndTomorrowLessons,
+	getLessonInfo,
+} from "../hooks/Api";
 import moment from "moment";
 import parse from "html-react-parser";
 import "moment/locale/ru";
@@ -41,19 +47,100 @@ function Main() {
 
 	const isMobile = width <= 768;
 
+	let slider: any = document.getElementById("grades");
+	let isDown: boolean = false;
+	let startX: number;
+	let scrollLeft: number;
+
+	const setSlider = () => {
+		slider = document.getElementById("grades");
+		slider.addEventListener("mousedown", (e: any) => {
+			isDown = true;
+			slider.classList.add("active");
+			startX = e.pageX - slider.offsetLeft;
+			scrollLeft = slider.scrollLeft;
+		});
+		slider.addEventListener("mouseleave", () => {
+			isDown = false;
+			slider.classList.remove("active");
+		});
+		slider.addEventListener("mouseup", () => {
+			isDown = false;
+			slider.classList.remove("active");
+		});
+		slider.addEventListener("mousemove", (e: any) => {
+			if (!isDown) return;
+			e.preventDefault();
+			const x = e.pageX - slider.offsetLeft;
+			const walk = (x - startX) * 1;
+			slider.scrollLeft = scrollLeft - walk;
+		});
+	};
+
+	React.useEffect(() => {
+		try {
+			setSlider();
+		} catch {}
+	});
+
 	const [user, setUser] = React.useState<UserData | null>(null);
-	const [todayLessons, setTodayLessons] = React.useState<any>([]);
-	const [tomorrowLessons, setTomorrowLessons] = React.useState<any>([]);
-	const [news, setNews] = React.useState<any>([]);
+	const [todayLessons, setTodayLessons] = React.useState<any>(null);
+	const [tomorrowLessons, setTomorrowLessons] = React.useState<any>(null);
+	const [recentMarks, setRecentMarks] = React.useState<any>(null);
+	const [news, setNews] = React.useState<any>(null);
 
 	React.useEffect(() => {
 		const getInfo = async () => {
+			setUser(getUser());
 			try {
 				const important = await getImportant();
 				setNews(important.feed);
+				try {
+					if (important.recentMarks.length === 0) {
+						setRecentMarks([]);
+					} else {
+						let marks: any = [];
+
+						for (const mark of important.recentMarks) {
+							let lesson = await getLessonInfo(mark.lesson.id);
+
+							marks.push({
+								lesson: {
+									date: mark.lesson.date,
+									id: mark.lesson.id,
+									name: lesson.subject.name,
+								},
+								marks: mark.marks,
+							});
+						}
+
+						setRecentMarks(marks);
+					}
+				} catch {
+					if (important.recentMarks === null) {
+						setRecentMarks([]);
+					} else {
+						let marks: any = [];
+
+						for (const mark of important.recentMarks) {
+							let lesson = await getLessonInfo(mark.lesson.id);
+
+							marks.push({
+								lesson: {
+									date: mark.lesson.date,
+									id: mark.lesson.id,
+									name: lesson.subject.name,
+								},
+								marks: mark.marks,
+							});
+						}
+
+						setRecentMarks(marks);
+					}
+				}
 			} catch (e) {
 				toast({
-					title: "Произошла ошибка при получении новостей",
+					title: "Произошла ошибка при получении новостей и расписания",
 					description: `${e}`,
 					status: "error",
 					duration: 3000,
@@ -65,10 +152,14 @@ function Main() {
 				const lessons = await getTodayAndTomorrowLessons();
 				if (lessons.today.length !== 0) {
 					setTodayLessons(lessons.today[0].lessons);
+				} else {
+					setTodayLessons([]);
 				}
 
 				if (lessons.tomorrow.length !== 0) {
 					setTomorrowLessons(lessons.tomorrow[0].lessons);
+				} else {
+					setTomorrowLessons([]);
 				}
 			} catch (e) {
 				toast({
@@ -80,8 +171,6 @@ function Main() {
 					position: isMobile ? "top" : "bottom",
 				});
 			}
-
-			setUser(getUser());
 		};
 
 		getInfo();
@@ -111,52 +200,75 @@ function Main() {
 		);
 	});
 
-	const Grade = (props: { grade: number; lesson: string }) => {
+	const Grade = (props: any) => {
 		let bgColor: string = "";
 
-		switch (props.grade) {
-			case 5:
+		switch (props.grade.marks[0].mood) {
+			case "Good":
 				bgColor = "rgba(0, 255, 25, 0.5)";
 				break;
-			case 4:
-				bgColor = "rgba(0, 255, 25, 0.5)";
-				break;
-			case 3:
+			case "Average":
 				bgColor = "rgba(255, 122, 0, 0.5)";
 				break;
-			case 2:
-				bgColor = "rgba(255, 0, 0, 0.5)";
-				break;
-			case 1:
+			case "Bad":
 				bgColor = "rgba(255, 0, 0, 0.5)";
 				break;
 		}
 
-		return (
-			<Box
-				minW={["100px", "120px"]}
-				minH={["100px", "120px"]}
-				userSelect="none"
-				bgColor={bgColor}
-				borderRadius="15px"
-			>
-				<Center h="full">
-					<Stack direction="column" h="full">
+		return props.isLoading ? (
+			<Stack direction="column" spacing="5px" userSelect="none">
+				<Skeleton borderRadius="15px">
+					<Stack
+						minW={"120px"}
+						minH={"120px"}
+						bgColor={bgColor}
+						borderRadius="15px"
+						justifyContent="center"
+						direction="column"
+					>
 						<Box />
 						<Box flex="1" />
 						<Center>
 							<Heading color="white" size="3xl">
-								{props.grade}
+								5
 							</Heading>
 						</Center>
 						<Box flex="1" />
-						<Text fontSize={[10, 12]} color="white">
-							{props.lesson}
-						</Text>
-						<Box />
 					</Stack>
-				</Center>
-			</Box>
+				</Skeleton>
+				<Stack direction="column" spacing="0px">
+					<SkeletonText noOfLines={2} />
+				</Stack>
+			</Stack>
+		) : (
+			<Stack direction="column" spacing="5px" userSelect="none">
+				<Stack
+					minW={"120px"}
+					minH={"120px"}
+					bgColor={bgColor}
+					borderRadius="15px"
+					justifyContent="center"
+					direction="column"
+				>
+					<Box />
+					<Box flex="1" />
+					<Center>
+						<Heading color="white" size="3xl">
+							{props.grade.marks[0].value}
+						</Heading>
+					</Center>
+					<Box flex="1" />
+				</Stack>
+				<Stack direction="column" spacing="0px">
+					<Text fontSize={14}>
+						{props.grade.lesson.name}
+						<br />
+						<span style={{ color: "#818c99" }}>
+							{moment.unix(props.grade.lesson.date).format("L")}
+						</span>
+					</Text>
+				</Stack>
+			</Stack>
 		);
 	};
 
@@ -184,7 +296,7 @@ function Main() {
 		</Stack>
 	);
 
-	const NewsBlock = ({ item }: any) => (
+	const NewsBlock = ({ item, isLoading }: any) => (
 		<Box
 			bgColor="white"
 			border="1px solid #BBBBBB"
@@ -194,20 +306,43 @@ function Main() {
 			<Stack direction="column" spacing="20px" m="20px">
 				<Stack direction="column" spacing="10px">
 					<Stack direction="row" spacing="10px">
-						<Avatar
-							name={item.content.title}
-							src={item.content.topicLogoUrl}
-							borderRadius="15px"
-						></Avatar>
-						<Stack direction="column" spacing="1px">
-							<Text fontSize={16}>{item.content.title}</Text>
-							<Text fontSize={15} color="#AAAAAA">
-								{`${moment.unix(item.timeStamp).format("LLL")}`}
-							</Text>
-						</Stack>
+						{(isLoading && (
+							<Skeleton borderRadius="15px">
+								<Avatar
+									name={item.content.title}
+									src={item.content.topicLogoUrl}
+									borderRadius="15px"
+								></Avatar>
+							</Skeleton>
+						)) || (
+							<Avatar
+								name={item.content.title}
+								src={item.content.topicLogoUrl}
+								borderRadius="15px"
+							></Avatar>
+						)}
+						{(isLoading && (
+							<Stack direction="column" spacing="1px">
+								<Skeleton>
+									<Text fontSize={16}>{item.content.title}</Text>
+									<Text fontSize={15} color="#AAAAAA">
+										{`${moment.unix(item.timeStamp).format("LLL")}`}
+									</Text>
+								</Skeleton>
+							</Stack>
+						)) || (
+							<Stack direction="column" spacing="1px">
+								<Text fontSize={16}>{item.content.title}</Text>
+								<Text fontSize={15} color="#AAAAAA">
+									{`${moment.unix(item.timeStamp).format("LLL")}`}
+								</Text>
+							</Stack>
+						)}
 					</Stack>
 					<Text className="news-text">
-						<Linkify>{parse(item.content.text)}</Linkify>
+						{(isLoading && <SkeletonText noOfLines={5} />) || (
+							<Linkify>{parse(item.content.text)}</Linkify>
+						)}
 					</Text>
 				</Stack>
 				{item.content.files && (
@@ -259,19 +394,39 @@ function Main() {
 								</Stack>
 							</Box>
 							<Divider opacity="1" borderColor="rgba(187, 187, 187, 1)" />
-							<Box mt="10px!important">
+							<Box mt="10px!important" mb="10px!important">
 								<Stack
 									className="grades"
 									direction="row"
+									cursor="grab"
 									overflow="auto"
 									overflowX="auto"
 									spacing="10px"
+									id="grades"
 								>
 									<Box />
 									<Box />
-									{todayLessons.map((item: any) => (
-										<Grade lesson={item.subject.name} grade={5} />
-									))}
+									{(recentMarks === null && (
+										<>
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+
+											<Grade grade={{ marks: [{ mood: "Bad" }] }} isLoading />
+										</>
+									)) || (
+										<>
+											{recentMarks.map((item: any) => (
+												<Grade grade={item} />
+											))}
+										</>
+									)}
 									<Box />
 								</Stack>
 							</Box>
@@ -296,45 +451,321 @@ function Main() {
 								</TabList>
 								<TabPanels>
 									<TabPanel padding={0} paddingBottom={5}>
-										{todayLessons.length === 0 && (
-											<Center paddingTop={5}>
-												<Text color="gray.500" fontWeight="bold">
-													Уроков не найдено
-												</Text>
-											</Center>
+										{(todayLessons !== null && (
+											<>
+												{todayLessons.length === 0 && (
+													<Center paddingTop={5}>
+														<Text color="gray.500" fontWeight="bold">
+															Уроков не найдено
+														</Text>
+													</Center>
+												)}
+												{todayLessons.map((item: any) => (
+													<Lesson lesson={item} />
+												))}
+											</>
+										)) || (
+											<>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+											</>
 										)}
-										{todayLessons.map((item: any) => (
-											<Lesson lesson={item} />
-										))}
 									</TabPanel>
 									<TabPanel padding={0} paddingBottom={5}>
-										{tomorrowLessons.length === 0 && (
-											<Center paddingTop={5}>
-												<Text color="gray.500" fontWeight="bold">
-													Уроков не найдено
-												</Text>
-											</Center>
+										{(tomorrowLessons !== null && (
+											<>
+												{tomorrowLessons.length === 0 && (
+													<Center paddingTop={5}>
+														<Text color="gray.500" fontWeight="bold">
+															Уроков не найдено
+														</Text>
+													</Center>
+												)}
+												{tomorrowLessons.map((item: any) => (
+													<Lesson lesson={item} />
+												))}
+											</>
+										)) || (
+											<>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<Stack
+															direction="row"
+															justifyContent="space-between"
+														>
+															<SkeletonText noOfLines={1} />
+														</Stack>
+
+														<SkeletonText noOfLines={1} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<Stack
+															direction="row"
+															justifyContent="space-between"
+														>
+															<SkeletonText noOfLines={1} />
+														</Stack>
+
+														<SkeletonText noOfLines={1} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<Stack
+															direction="row"
+															justifyContent="space-between"
+														>
+															<SkeletonText noOfLines={1} />
+														</Stack>
+
+														<SkeletonText noOfLines={1} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<Stack
+															direction="row"
+															justifyContent="space-between"
+														>
+															<SkeletonText noOfLines={1} />
+														</Stack>
+
+														<SkeletonText noOfLines={1} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+											</>
 										)}
-										{tomorrowLessons.map((item: any) => (
-											<Lesson lesson={item} />
-										))}
 									</TabPanel>
 								</TabPanels>
 							</Tabs>
 						</Stack>
 					</Box>
-					{(news.length !== 0 && (
-						<Stack w={["100%", "65%"]} direction="column" spacing="20px">
-							{news.map((item: any) => (
-								<NewsBlock item={item} />
-							))}
-						</Stack>
+					{(news !== null && (
+						<>
+							{(news.length !== 0 && (
+								<Stack w={["100%", "65%"]} direction="column" spacing="20px">
+									{news.map((item: any) => (
+										<NewsBlock item={item} />
+									))}
+								</Stack>
+							)) || (
+								<Center w={["100%", "65%"]}>
+									<Text color="gray.500" fontWeight="bold">
+										Новостей не найдено
+									</Text>
+								</Center>
+							)}
+						</>
 					)) || (
-						<Center w={["100%", "65%"]}>
-							<Text color="gray.500" fontWeight="bold">
-								Новостей не найдено
-							</Text>
-						</Center>
+						<Stack w={["100%", "65%"]} direction="column" spacing="20px">
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+							<NewsBlock
+								item={{
+									content: {
+										title: "Загрузка",
+										text: "Загрузка",
+										topicLogoUrl: "Загрузка",
+									},
+								}}
+								isLoading
+							/>
+						</Stack>
 					)}
 				</Stack>
 			)}
