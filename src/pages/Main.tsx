@@ -599,14 +599,7 @@ function Main() {
 														mt="10px"
 														mb="10px"
 													>
-														<Stack
-															direction="row"
-															justifyContent="space-between"
-														>
-															<SkeletonText noOfLines={1} />
-														</Stack>
-
-														<SkeletonText noOfLines={1} />
+														<SkeletonText noOfLines={2} />
 													</Stack>
 													<Divider
 														opacity="1"
@@ -622,14 +615,7 @@ function Main() {
 														mt="10px"
 														mb="10px"
 													>
-														<Stack
-															direction="row"
-															justifyContent="space-between"
-														>
-															<SkeletonText noOfLines={1} />
-														</Stack>
-
-														<SkeletonText noOfLines={1} />
+														<SkeletonText noOfLines={2} />
 													</Stack>
 													<Divider
 														opacity="1"
@@ -644,14 +630,7 @@ function Main() {
 														mt="10px"
 														mb="10px"
 													>
-														<Stack
-															direction="row"
-															justifyContent="space-between"
-														>
-															<SkeletonText noOfLines={1} />
-														</Stack>
-
-														<SkeletonText noOfLines={1} />
+														<SkeletonText noOfLines={2} />
 													</Stack>
 													<Divider
 														opacity="1"
@@ -666,14 +645,52 @@ function Main() {
 														mt="10px"
 														mb="10px"
 													>
-														<Stack
-															direction="row"
-															justifyContent="space-between"
-														>
-															<SkeletonText noOfLines={1} />
-														</Stack>
-
-														<SkeletonText noOfLines={1} />
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
+													</Stack>
+													<Divider
+														opacity="1"
+														borderColor="rgba(187, 187, 187, 1)"
+													/>
+												</Stack>
+												<Stack direction="column" spacing="1px">
+													<Stack
+														direction="column"
+														spacing="1px"
+														m="20px"
+														mt="10px"
+														mb="10px"
+													>
+														<SkeletonText noOfLines={2} />
 													</Stack>
 													<Divider
 														opacity="1"
