@@ -1,7 +1,10 @@
 import React, { ReactNode } from "react";
-import { Box, Link, Stack, Center, Heading } from "@chakra-ui/react";
+import { Box, Link, Stack, Center, Heading, Text } from "@chakra-ui/react";
 import { Link as RLink, useLocation } from "react-router-dom";
 //import { CheckAuth, Logout } from "../hooks/Auth";
+import { FaHome } from "react-icons/fa";
+import { IoAnalytics } from "react-icons/io5";
+import { AiOutlineCalendar } from "react-icons/ai";
 
 const Logo = ({ isMobile }: { isMobile: boolean }) => {
 	let name: string = "";
@@ -28,7 +31,7 @@ const Logo = ({ isMobile }: { isMobile: boolean }) => {
 	);
 };
 
-const DesktopHeader = ({ isMobile }: { isMobile: boolean }) => (
+const UPHeader = ({ isMobile }: { isMobile: boolean }) => (
 	<Stack
 		direction="row"
 		justifyContent="space-between"
@@ -72,6 +75,51 @@ const MenuItem = (props: ItemProps) => {
 	);
 };
 
+function MobileMenu() {
+	const MenuButton = ({
+		icon,
+		name,
+		to,
+	}: {
+		icon: any;
+		name: string;
+		to: string;
+	}) => {
+		const location = useLocation();
+		let tColor: string = "#99a2ad";
+		if (location.pathname === to) {
+			tColor = "black";
+		}
+		return (
+			<Box w="100%" as={RLink} to={to}>
+				<Stack m="10px" direction="column" color={tColor} spacing="1px">
+					<Center>{icon}</Center>
+					<Center>
+						<Text>{name}</Text>
+					</Center>
+				</Stack>
+			</Box>
+		);
+	};
+	return (
+		<Box w="full" bgColor="white" bottom="0" position="fixed" zIndex={3}>
+			<Stack direction="row" spacing="0px">
+				<MenuButton icon={<FaHome size={24} />} name="Главная" to="/" />
+				<MenuButton
+					icon={<IoAnalytics size={24} />}
+					name="Успеваемость"
+					to="/performance"
+				/>
+				<MenuButton
+					icon={<AiOutlineCalendar size={24} />}
+					name="Расписание"
+					to="/schedule"
+				/>
+			</Stack>
+		</Box>
+	);
+}
+
 function Header() {
 	const [width, setWidth] = React.useState<number>(window.innerWidth);
 	React.useEffect(() => {
@@ -86,7 +134,8 @@ function Header() {
 	const isMobile = width <= 768;
 	return (
 		<Box w="full" bgColor="white" position="fixed" zIndex={3}>
-			<DesktopHeader isMobile={isMobile} />
+			<UPHeader isMobile={isMobile} />
+			{isMobile && <MobileMenu />}
 		</Box>
 	);
 }
