@@ -126,7 +126,7 @@ function MobileMenu() {
 		<Box
 			w="full"
 			bgColor="white"
-			bottom="-1"
+			bottom="-1px"
 			height="48px"
 			position="fixed"
 			zIndex={3}
