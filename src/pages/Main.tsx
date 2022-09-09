@@ -286,6 +286,43 @@ function Main() {
 						</Text>
 					)}
 				</Stack>
+				{lesson.workMarks.length !== 0 && (
+					<Stack direction="row" spacing="2px">
+						{lesson.workMarks.map((mark: any) => {
+							let bgColor: string = "";
+
+							switch (mark.marks[0].mood) {
+								case "Good":
+									bgColor = "rgba(0, 255, 25, 0.5)";
+									break;
+								case "Average":
+									bgColor = "rgba(255, 122, 0, 0.5)";
+									break;
+								case "Bad":
+									bgColor = "rgba(255, 0, 0, 0.5)";
+									break;
+							}
+
+							return (
+								<Box
+									alignItems="center"
+									borderRadius="6px"
+									color="white"
+									display="flex"
+									fontSize="16px"
+									justifyContent="center"
+									userSelect="none"
+									minW="28px"
+									minH="28px"
+									overflow="hidden"
+									bgColor={bgColor}
+								>
+									<Heading fontSize={14}>{mark.marks[0].value}</Heading>
+								</Box>
+							);
+						})}
+					</Stack>
+				)}
 				{lesson.homework?.text && (
 					<Text fontSize={14} color="#AAAAAA">
 						<Linkify>{lesson.homework.text}</Linkify>
@@ -335,6 +372,9 @@ function Main() {
 								<Text fontSize={16}>{item.content.title}</Text>
 								<Text fontSize={15} color="#AAAAAA">
 									{`${moment.unix(item.timeStamp).format("LLL")}`}
+									{item.content.authorName && (
+										<span>, {item.content.authorName}</span>
+									)}
 								</Text>
 							</Stack>
 						)}
@@ -455,7 +495,10 @@ function Main() {
 											<>
 												{todayLessons.length === 0 && (
 													<Center paddingTop={5}>
-														<Text color="gray.500" fontWeight="bold">
+														<Text
+															color="rgba(187, 187, 187, 1)"
+															fontWeight="bold"
+														>
 															Уроков не найдено
 														</Text>
 													</Center>
@@ -580,7 +623,10 @@ function Main() {
 											<>
 												{tomorrowLessons.length === 0 && (
 													<Center paddingTop={5}>
-														<Text color="gray.500" fontWeight="bold">
+														<Text
+															color="rgba(187, 187, 187, 1)"
+															fontWeight="bold"
+														>
 															Уроков не найдено
 														</Text>
 													</Center>
@@ -714,7 +760,7 @@ function Main() {
 								</Stack>
 							)) || (
 								<Center w={["100%", "65%"]}>
-									<Text color="gray.500" fontWeight="bold">
+									<Text color="rgba(187, 187, 187, 1)" fontWeight="bold">
 										Новостей не найдено
 									</Text>
 								</Center>
