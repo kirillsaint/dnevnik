@@ -2,6 +2,7 @@ import axios from "axios";
 import { getUser } from "./Auth";
 import moment from "moment";
 import JSONbig from "json-bigint";
+import { getDaysOfWeek } from "./Helpers";
 
 async function getContext() {
 	const user = getUser();
@@ -96,4 +97,29 @@ async function getImportant() {
 	return JSONbig.parse(res);
 }
 
-export { getContext, getImportant, getTodayAndTomorrowLessons, getLessonInfo };
+async function getSchedule() {
+	const context = await getContext();
+	const user = getUser();
+
+	if (!user) return { error: "not auth" };
+	const dates = getDaysOfWeek();
+	const { data: res } = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[0]}&finishDate=${dates[6]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+			transformResponse: [(data) => data],
+		}
+	);
+	console.log(JSONbig.parse(res));
+	return JSONbig.parse(res);
+}
+
+export {
+	getContext,
+	getImportant,
+	getTodayAndTomorrowLessons,
+	getLessonInfo,
+	getSchedule,
+};

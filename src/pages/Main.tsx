@@ -30,6 +30,7 @@ import moment from "moment";
 import parse from "html-react-parser";
 import "moment/locale/ru";
 import Linkify from "react-linkify";
+import { Icon20DocumentOutline } from "@vkontakte/icons";
 
 function Main() {
 	const toast = useToast();
@@ -391,10 +392,16 @@ function Main() {
 							<Link
 								color="#0072B2"
 								_hover={{ textDecoration: "none", color: "black" }}
-								href={file.fileLink}
-								download={file.fileLink}
+								href={`${file.fileLink}?fileName=${file.fileName}.${file.extension}`}
+								isExternal
 							>
-								{file.fileName}
+								<Stack direction="row" spacing="3px">
+									<Icon20DocumentOutline />
+
+									<span>
+										{file.fileName}.{file.extension}
+									</span>
+								</Stack>
 							</Link>
 						))}
 					</Stack>
