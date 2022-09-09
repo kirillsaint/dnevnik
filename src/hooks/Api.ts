@@ -1,20 +1,22 @@
 import axios from "axios";
 import { getUser } from "./Auth";
 import moment from "moment";
+import JSONbig from "json-bigint";
 
 async function getContext() {
 	const user = getUser();
 
-	const { data: res } = await axios.get(
+	const res = await axios.get(
 		`https://api.dnevnik.ru/mobile/v5/users/${user?.userId}/context?`,
 		{
 			headers: {
 				accessToken: `${user?.accessToken}`,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
 
-	return res;
+	return JSONbig.parse(res.data);
 }
 
 async function getTodayAndTomorrowLessons() {
@@ -31,39 +33,40 @@ async function getTodayAndTomorrowLessons() {
 
 	if (!user) return { error: "not auth" };
 
-	const groupId = BigInt(context.contextPersons[0].group.id) - BigInt(112);
-
 	const { data: today } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${groupId}/diary?startDate=${date}&finishDate=${tommorowDate}`,
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${date}&finishDate=${tommorowDate}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
 
 	const { data: tomorrow } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${groupId}/diary?startDate=${tommorowDate}&finishDate=${afterTommorowDate}`,
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${tommorowDate}&finishDate=${afterTommorowDate}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
 
-	return { today: today.days, tomorrow: tomorrow.days };
+	return {
+		today: JSONbig.parse(today).days,
+		tomorrow: JSONbig.parse(tomorrow).days,
+	};
 }
 
-async function getLessonInfo(lessonId: number) {
+async function getLessonInfo(lessonId: any) {
 	const context = await getContext();
 	const user = getUser();
 
 	if (!user) return { error: "not auth" };
 
-	const groupId = BigInt(context.contextPersons[0].group.id) - BigInt(112);
-
 	const { data: res } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v6/persons/${user.personId}/groups/${groupId}/lessons/${lessonId}/lessonDetails?`,
+		`https://api.dnevnik.ru/mobile/v6/persons/${user.personId}/groups/${context.contextPersons[0].group.id}/lessons/${lessonId}/lessonDetails?`,
 		{
 			headers: {
 				accessToken: user.accessToken,
@@ -75,27 +78,22 @@ async function getLessonInfo(lessonId: number) {
 }
 
 async function getImportant() {
-	// let date: any = moment().format("YYYY-MM-DD 00:00:00");
-	// date = moment(date).unix();
-	// let tommorowDate: any = moment().add(1, "days").format("YYYY-MM-DD 00:00:00");
-	// tommorowDate = moment(tommorowDate).unix();
 	const context = await getContext();
 	const user = getUser();
 
 	if (!user) return { error: "not auth" };
 
-	const groupId = BigInt(context.contextPersons[0].group.id) - BigInt(112);
-
 	const { data: res } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v6/persons/${user.personId}/groups/${groupId}/important?`,
+		`https://api.dnevnik.ru/mobile/v6/persons/${user.personId}/groups/${context.contextPersons[0].group.id}/important?`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
 
-	return res;
+	return JSONbig.parse(res);
 }
 
 export { getContext, getImportant, getTodayAndTomorrowLessons, getLessonInfo };
