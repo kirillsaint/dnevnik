@@ -325,7 +325,7 @@ function Main() {
 					</Stack>
 				)}
 				{lesson.homework?.text && (
-					<Text fontSize={14} color="#AAAAAA">
+					<Text className="homework" fontSize={14} color="#AAAAAA">
 						<Linkify>{lesson.homework.text}</Linkify>
 					</Text>
 				)}

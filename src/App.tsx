@@ -7,6 +7,7 @@ import { getAuth, updateAuth } from "./hooks/Auth";
 import Loader from "./components/Loader";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
+import Schedule from "./pages/Schedule";
 
 function App() {
 	const [auth, setAuth] = React.useState<boolean | null>(null);
@@ -44,6 +45,7 @@ function App() {
 							{(auth === false && <Route path="*" element={<Login />} />) || (
 								<>
 									<Route path="/" element={<Main />} />
+									<Route path="/schedule" element={<Schedule />} />
 									<Route path="*" element={<h1>not found</h1>} />
 								</>
 							)}

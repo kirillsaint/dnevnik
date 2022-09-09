@@ -97,23 +97,112 @@ async function getImportant() {
 	return JSONbig.parse(res);
 }
 
-async function getSchedule() {
+async function getScheduleCurrentWeek() {
 	const context = await getContext();
 	const user = getUser();
 
 	if (!user) return { error: "not auth" };
 	const dates = getDaysOfWeek();
-	const { data: res } = await axios.get(
-		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[0]}&finishDate=${dates[6]}`,
+	let schedule: any = [];
+	let res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[0]}&finishDate=${dates[1]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
-			transformResponse: [(data) => data],
 		}
 	);
-	console.log(JSONbig.parse(res));
-	return JSONbig.parse(res);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[1]}&finishDate=${dates[2]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[2]}&finishDate=${dates[3]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[3]}&finishDate=${dates[4]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[4]}&finishDate=${dates[5]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[5]}&finishDate=${dates[6]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	res = await axios.get(
+		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[6]}&finishDate=${dates[7]}`,
+		{
+			headers: {
+				accessToken: user.accessToken,
+			},
+		}
+	);
+	if (res.data.days.length !== 0) {
+		schedule.push(res.data.days[0]);
+	} else {
+		schedule.push(null);
+	}
+
+	return schedule;
 }
 
 export {
@@ -121,5 +210,5 @@ export {
 	getImportant,
 	getTodayAndTomorrowLessons,
 	getLessonInfo,
-	getSchedule,
+	getScheduleCurrentWeek,
 };

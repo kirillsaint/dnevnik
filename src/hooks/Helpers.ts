@@ -5,7 +5,7 @@ function getDaysOfWeek() {
 		let week: number[] = [];
 
 		current.setDate(current.getDate() - current.getDay() + 1);
-		for (var i = 0; i < 7; i++) {
+		for (var i = 0; i < 8; i++) {
 			week.push(moment(current).unix());
 			current.setDate(current.getDate() + 1);
 		}

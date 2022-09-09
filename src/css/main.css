@@ -9,8 +9,19 @@
 .news-text a:hover {
 	text-decoration: none;
 	color: #333333 !important;
+	transition-property: var(--kirillsaint-transition-property-common);
+	transition-duration: var(--kirillsaint-transition-duration-fast);
+	transition-timing-function: var(--kirillsaint-transition-easing-ease-out);
 }
 
 .news-text ol {
 	margin-left: 15px;
+}
+
+.homework a {
+	color: #aaaaaa;
+}
+
+.homework a:hover {
+	color: black;
 }
