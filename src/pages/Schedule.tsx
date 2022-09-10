@@ -204,7 +204,7 @@ function Schedule() {
 						<Button
 							borderRadius="10px"
 							borderColor="black"
-							w={["full", "100px"]}
+							w={["full", "200px"]}
 							h="40px"
 							color={"black"}
 							_hover={{
@@ -219,7 +219,7 @@ function Schedule() {
 							borderRadius="10px"
 							borderColor="black"
 							color={"black"}
-							w={["full", "100px"]}
+							w={["full", "200px"]}
 							h="40px"
 							_hover={{
 								bgColor: "black",
