@@ -321,6 +321,10 @@ function Schedule() {
 								bgColor: "black",
 								color: "white",
 							}}
+							_active={{
+								bgColor: "black",
+								color: "white",
+							}}
 							onClick={getPrevWeek}
 						>
 							Назад
@@ -332,6 +336,10 @@ function Schedule() {
 							w={["full", "200px"]}
 							h="40px"
 							_hover={{
+								bgColor: "black",
+								color: "white",
+							}}
+							_active={{
 								bgColor: "black",
 								color: "white",
 							}}

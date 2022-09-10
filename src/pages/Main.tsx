@@ -192,6 +192,10 @@ function Main() {
 					bgColor: isSelected ? "black" : "#BBBBBB",
 					color: "white",
 				}}
+				_active={{
+					bgColor: isSelected ? "black" : "#BBBBBB",
+					color: "white",
+				}}
 				w="100%"
 				h="40px"
 				{...tabProps}
