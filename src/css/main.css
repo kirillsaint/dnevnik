@@ -4,6 +4,11 @@
 }
 .news-text a {
 	color: #0072b2 !important;
+	-webkit-tap-highlight-color: rgba(0, 114, 178, 0.6);
+}
+
+.news-files a {
+	-webkit-tap-highlight-color: rgba(0, 114, 178, 0.2);
 }
 
 .news-text a:hover {
@@ -20,8 +25,17 @@
 
 .homework a {
 	color: #aaaaaa;
+	-webkit-tap-highlight-color: rgba(170, 170, 170, 0.6);
 }
 
 .homework a:hover {
 	color: black;
+}
+
+a {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+button {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

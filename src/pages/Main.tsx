@@ -387,7 +387,7 @@ function Main() {
 					</Text>
 				</Stack>
 				{item.content.files && (
-					<Stack direction="column" spacing="5px">
+					<Stack direction="column" spacing="5px" className="news-files">
 						{item.content.files.map((file: any) => (
 							<Link
 								color="#0072B2"

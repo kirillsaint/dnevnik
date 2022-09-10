@@ -97,15 +97,16 @@ function MobileMenu() {
 		return (
 			<Box
 				w="100%"
+				as={Link}
 				onClick={() => {
 					navigate(to);
 				}}
 				_active={{
 					bgColor: "rgba(0,0,0,.04)",
-					"transition-property":
-						"background-color,border-color,color,fill,stroke,opacity,box-shadow,transform",
-					"transition-duration": "200ms",
+					textDecoration: "none",
+					borderRadius: "10px",
 				}}
+				_hover={{ textDecoration: "none" }}
 			>
 				<Stack
 					position="relative"
