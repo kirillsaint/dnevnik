@@ -1,7 +1,7 @@
 import moment from "moment";
 
-function getDaysOfWeek() {
-	function dates(current) {
+function getDaysOfWeek(date: any) {
+	function dates(current: any) {
 		let week: number[] = [];
 
 		current.setDate(current.getDate() - current.getDay() + 1);
@@ -11,7 +11,7 @@ function getDaysOfWeek() {
 		}
 		return week;
 	}
-	return dates(new Date(moment().year(), moment().month(), moment().date()));
+	return dates(date);
 }
 
 export { getDaysOfWeek };

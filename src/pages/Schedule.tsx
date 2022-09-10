@@ -1,5 +1,5 @@
 import React from "react";
-import { getScheduleCurrentWeek } from "../hooks/Api";
+import { getScheduleWeek } from "../hooks/Api";
 import {
 	Box,
 	Stack,
@@ -9,25 +9,61 @@ import {
 	SimpleGrid,
 	Divider,
 	Container,
+	Button,
+	ButtonGroup,
 } from "@chakra-ui/react";
 import Loader from "../components/Loader";
 import moment from "moment";
 import "moment/locale/ru";
 import Linkify from "react-linkify";
+import { getDaysOfWeek } from "../hooks/Helpers";
 
 function Schedule() {
 	moment.locale("ru");
 
 	const [schedule, setSchedule] = React.useState<IDay[] | []>([]);
+	const [currentWeek, setCurrentWeek] = React.useState<number[]>([]);
 	React.useEffect(() => {
+		setCurrentWeek(
+			getDaysOfWeek(
+				new Date(moment().year(), moment().month(), moment().date())
+			)
+		);
+	}, []);
+	React.useEffect(() => {
+		setSchedule([]);
 		const getSchedule = async () => {
-			const schedule = await getScheduleCurrentWeek();
+			const schedule = await getScheduleWeek(currentWeek);
 
 			setSchedule(schedule);
 		};
 
 		getSchedule();
-	}, []);
+	}, [currentWeek]);
+
+	const getPrevWeek = () => {
+		setCurrentWeek(
+			getDaysOfWeek(
+				new Date(
+					moment.unix(currentWeek[0]).utc().add(-7, "days").year(),
+					moment.unix(currentWeek[0]).utc().add(-7, "days").month(),
+					moment.unix(currentWeek[0]).utc().add(-7, "days").date()
+				)
+			)
+		);
+	};
+
+	const getNextWeek = () => {
+		setCurrentWeek(
+			getDaysOfWeek(
+				new Date(
+					moment.unix(currentWeek[0]).utc().add(7, "days").year(),
+					moment.unix(currentWeek[0]).utc().add(7, "days").month(),
+					moment.unix(currentWeek[0]).utc().add(7, "days").date()
+				)
+			)
+		);
+	};
 
 	interface IDay {
 		date: number;
@@ -158,20 +194,58 @@ function Schedule() {
 		<Loader />
 	) : (
 		<Container maxW={["full", "7xl"]}>
-			<SimpleGrid columns={[1, 2]} spacing={["10px", "20px"]}>
-				<Stack direction="column" spacing={["10px", "20px"]}>
-					<Day day={schedule[0]} dayName="Понедельник" />
-					<Day day={schedule[1]} dayName="Вторник" />
-					<Day day={schedule[2]} dayName="Среда" />
+			<Stack direction="column" spacing="10px">
+				<Stack direction="column" spacing="5px">
+					<Heading size="md">
+						{moment.unix(currentWeek[0]).format("LL")} –{" "}
+						{moment.unix(currentWeek[6]).format("LL")}
+					</Heading>
+					<ButtonGroup variant="outline" spacing="2px">
+						<Button
+							borderRadius="10px"
+							borderColor="black"
+							w={["full", "100px"]}
+							h="40px"
+							color={"black"}
+							_hover={{
+								bgColor: "black",
+								color: "white",
+							}}
+							onClick={getPrevWeek}
+						>
+							Назад
+						</Button>
+						<Button
+							borderRadius="10px"
+							borderColor="black"
+							color={"black"}
+							w={["full", "100px"]}
+							h="40px"
+							_hover={{
+								bgColor: "black",
+								color: "white",
+							}}
+							onClick={getNextWeek}
+						>
+							Далее
+						</Button>
+					</ButtonGroup>
 				</Stack>
+				<SimpleGrid columns={[1, 2]} spacing={["10px", "20px"]}>
+					<Stack direction="column" spacing={["10px", "20px"]}>
+						<Day day={schedule[0]} dayName="Понедельник" />
+						<Day day={schedule[1]} dayName="Вторник" />
+						<Day day={schedule[2]} dayName="Среда" />
+					</Stack>
 
-				<Stack direction="column" spacing={["10px", "20px"]}>
-					<Day day={schedule[3]} dayName="Четверг" />
-					<Day day={schedule[4]} dayName="Пятница" />
-					<Day day={schedule[5]} dayName="Суббота" />
-					<Day day={schedule[6]} dayName="Воскресенье" />
-				</Stack>
-			</SimpleGrid>
+					<Stack direction="column" spacing={["10px", "20px"]}>
+						<Day day={schedule[3]} dayName="Четверг" />
+						<Day day={schedule[4]} dayName="Пятница" />
+						<Day day={schedule[5]} dayName="Суббота" />
+						<Day day={schedule[6]} dayName="Воскресенье" />
+					</Stack>
+				</SimpleGrid>
+			</Stack>
 		</Container>
 	);
 }
