@@ -783,6 +783,7 @@ function Main() {
 						<Stack w={["100%", "65%"]} direction="column" spacing="20px">
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
@@ -793,6 +794,7 @@ function Main() {
 							/>
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
@@ -803,6 +805,7 @@ function Main() {
 							/>
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
@@ -813,6 +816,7 @@ function Main() {
 							/>
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
@@ -823,6 +827,7 @@ function Main() {
 							/>
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
@@ -833,6 +838,7 @@ function Main() {
 							/>
 							<NewsBlock
 								item={{
+									type: "Post",
 									content: {
 										title: "Загрузка",
 										text: "Загрузка",
