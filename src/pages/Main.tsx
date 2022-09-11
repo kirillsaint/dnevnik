@@ -338,81 +338,83 @@ function Main() {
 		</Stack>
 	);
 
-	const NewsBlock = ({ item, isLoading }: any) => (
-		<Box
-			bgColor="white"
-			border="1px solid #BBBBBB"
-			borderRadius="15px"
-			w="100%"
-		>
-			<Stack direction="column" spacing="20px" m="20px">
-				<Stack direction="column" spacing="10px">
-					<Stack direction="row" spacing="10px">
-						{(isLoading && (
-							<Skeleton borderRadius="15px">
+	const NewsBlock = ({ item, isLoading }: any) => {
+		return item.type === "Post" ? (
+			<Box
+				bgColor="white"
+				border="1px solid #BBBBBB"
+				borderRadius="15px"
+				w="100%"
+			>
+				<Stack direction="column" spacing="20px" m="20px">
+					<Stack direction="column" spacing="10px">
+						<Stack direction="row" spacing="10px">
+							{(isLoading && (
+								<Skeleton borderRadius="15px">
+									<Avatar
+										name={item.content.title}
+										src={item.content.topicLogoUrl}
+										borderRadius="15px"
+									></Avatar>
+								</Skeleton>
+							)) || (
 								<Avatar
 									name={item.content.title}
 									src={item.content.topicLogoUrl}
 									borderRadius="15px"
 								></Avatar>
-							</Skeleton>
-						)) || (
-							<Avatar
-								name={item.content.title}
-								src={item.content.topicLogoUrl}
-								borderRadius="15px"
-							></Avatar>
-						)}
-						{(isLoading && (
-							<Stack direction="column" spacing="1px">
-								<Skeleton>
+							)}
+							{(isLoading && (
+								<Stack direction="column" spacing="1px">
+									<Skeleton>
+										<Text fontSize={16}>{item.content.title}</Text>
+										<Text fontSize={15} color="#AAAAAA">
+											{`${moment.unix(item.timeStamp).format("LLL")}`}
+										</Text>
+									</Skeleton>
+								</Stack>
+							)) || (
+								<Stack direction="column" spacing="1px">
 									<Text fontSize={16}>{item.content.title}</Text>
 									<Text fontSize={15} color="#AAAAAA">
 										{`${moment.unix(item.timeStamp).format("LLL")}`}
+										{item.content.authorName && (
+											<span>, {item.content.authorName}</span>
+										)}
 									</Text>
-								</Skeleton>
-							</Stack>
-						)) || (
-							<Stack direction="column" spacing="1px">
-								<Text fontSize={16}>{item.content.title}</Text>
-								<Text fontSize={15} color="#AAAAAA">
-									{`${moment.unix(item.timeStamp).format("LLL")}`}
-									{item.content.authorName && (
-										<span>, {item.content.authorName}</span>
-									)}
-								</Text>
-							</Stack>
-						)}
-					</Stack>
-					<Text className="news-text">
-						{(isLoading && <SkeletonText noOfLines={5} />) || (
-							<Linkify>{parse(item.content.text)}</Linkify>
-						)}
-					</Text>
-				</Stack>
-				{item.content.files && (
-					<Stack direction="column" spacing="5px" className="news-files">
-						{item.content.files.map((file: any) => (
-							<Link
-								color="#0072B2"
-								_hover={{ textDecoration: "none", color: "black" }}
-								href={`${file.fileLink}?fileName=${file.fileName}.${file.extension}`}
-								isExternal
-							>
-								<Stack direction="row" spacing="3px">
-									<Icon20DocumentOutline />
-
-									<span>
-										{file.fileName}.{file.extension}
-									</span>
 								</Stack>
-							</Link>
-						))}
+							)}
+						</Stack>
+						<Text className="news-text">
+							{(isLoading && <SkeletonText noOfLines={5} />) || (
+								<Linkify>{parse(item.content.text)}</Linkify>
+							)}
+						</Text>
 					</Stack>
-				)}
-			</Stack>
-		</Box>
-	);
+					{item.content.files && (
+						<Stack direction="column" spacing="5px" className="news-files">
+							{item.content.files.map((file: any) => (
+								<Link
+									color="#0072B2"
+									_hover={{ textDecoration: "none", color: "black" }}
+									href={`${file.fileLink}?fileName=${file.fileName}.${file.extension}`}
+									isExternal
+								>
+									<Stack direction="row" spacing="3px">
+										<Icon20DocumentOutline />
+
+										<span>
+											{file.fileName}.{file.extension}
+										</span>
+									</Stack>
+								</Link>
+							))}
+						</Stack>
+					)}
+				</Stack>
+			</Box>
+		) : null;
+	};
 
 	return (
 		<>
