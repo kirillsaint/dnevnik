@@ -97,6 +97,7 @@ function MobileMenu() {
 		return (
 			<Box
 				w="100%"
+				userSelect="none"
 				as={Link}
 				onClick={() => {
 					navigate(to);
