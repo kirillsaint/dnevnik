@@ -1,12 +1,12 @@
 import React from "react";
-import { Spinner, Center } from "@chakra-ui/react";
+import { Spinner, Center, useColorModeValue } from "@chakra-ui/react";
 
 function Loader() {
-	return (
-		<Center minH="100vh">
-			<Spinner color="black" size="xl" />
-		</Center>
-	);
+  return (
+    <Center minH="100vh">
+      <Spinner color={useColorModeValue("black", "white")} size="xl" />
+    </Center>
+  );
 }
 
 export default Loader;
