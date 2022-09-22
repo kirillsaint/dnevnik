@@ -10,51 +10,51 @@ import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
 
 function App() {
-  const [auth, setAuth] = React.useState<boolean | null>(null);
+	const [auth, setAuth] = React.useState<boolean | null>(null);
 
-  React.useEffect(() => {
-    const checkAuth = async () => {
-      const check = await getAuth();
+	React.useEffect(() => {
+		const checkAuth = async () => {
+			const check = await getAuth();
 
-      setAuth(check);
+			setAuth(check);
 
-      if (check) {
-        updateAuth();
-      }
-    };
+			if (check) {
+				updateAuth();
+			}
+		};
 
-    checkAuth();
-  }, []);
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      {auth && <Header />}
-      <Container
-        maxW={["full", "full", "full", "full", "full", "8xl"]}
-        paddingInlineStart={0}
-        paddingInlineEnd={0}
-        paddingLeft={[3, 10]}
-        paddingRight={[3, 10]}
-        zIndex={2}
-        paddingTop={auth ? [14, 20] : 0}
-        paddingBottom={auth ? 20 : 0}
-      >
-        <Routes>
-          {(auth === null && <Route path="*" element={<Loader />} />) || (
-            <>
-              {(auth === false && <Route path="*" element={<Login />} />) || (
-                <>
-                  <Route path="/" element={<Main />} />
-                  <Route path="/schedule" element={<Schedule />} />
-                  <Route path="*" element={<Navigate to="/" />} />
-                </>
-              )}
-            </>
-          )}
-        </Routes>
-      </Container>
-    </BrowserRouter>
-  );
+		checkAuth();
+	}, []);
+	return (
+		<BrowserRouter>
+			<ScrollToTop />
+			{auth && <Header />}
+			<Container
+				maxW={["full", "full", "full", "full", "full", "8xl"]}
+				paddingInlineStart={0}
+				paddingInlineEnd={0}
+				paddingLeft={[3, 10]}
+				paddingRight={[3, 10]}
+				zIndex={2}
+				paddingTop={auth ? [16, 20] : 0}
+				paddingBottom={auth ? 20 : 0}
+			>
+				<Routes>
+					{(auth === null && <Route path="*" element={<Loader />} />) || (
+						<>
+							{(auth === false && <Route path="*" element={<Login />} />) || (
+								<>
+									<Route path="/" element={<Main />} />
+									<Route path="/schedule" element={<Schedule />} />
+									<Route path="*" element={<Navigate to="/" />} />
+								</>
+							)}
+						</>
+					)}
+				</Routes>
+			</Container>
+		</BrowserRouter>
+	);
 }
 
 export default App;

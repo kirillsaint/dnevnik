@@ -85,12 +85,12 @@ function Lesson({ lesson, isLast }: { lesson: ILesson; isLast?: boolean }) {
 									fontSize="16px"
 									justifyContent="center"
 									userSelect="none"
-									minW="28px"
-									minH="28px"
+									minW={["28px", "35px"]}
+									minH={["28px", "35px"]}
 									overflow="hidden"
 									bgColor={bgColor}
 								>
-									<Heading fontSize={14}>{mark.marks[0].value}</Heading>
+									<Heading fontSize={[14, 18]}>{mark.marks[0].value}</Heading>
 								</Box>
 							);
 						})}
