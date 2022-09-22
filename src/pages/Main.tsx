@@ -31,7 +31,7 @@ import moment from "moment";
 import parse from "html-react-parser";
 import "moment/locale/ru";
 import Linkify from "react-linkify";
-import { Icon20DocumentOutline } from "@vkontakte/icons";
+import { Icon20DocumentOutline, Icon16UserOutline } from "@vkontakte/icons";
 
 function Main() {
 	const { colorMode } = useColorMode();
@@ -363,7 +363,7 @@ function Main() {
 				borderRadius="15px"
 				w="100%"
 			>
-				<Stack direction="column" spacing="20px" m="20px">
+				<Stack direction="column" spacing="20px" m="20px" overflow="hidden">
 					<Stack direction="column" spacing="10px">
 						<Stack direction="row" spacing="10px">
 							{(isLoading && (
@@ -395,9 +395,6 @@ function Main() {
 									<Text fontSize={16}>{item.content.title}</Text>
 									<Text fontSize={15} color="#AAAAAA">
 										{`${moment.unix(item.timeStamp).format("LLL")}`}
-										{item.content.authorName && (
-											<span>, {item.content.authorName}</span>
-										)}
 									</Text>
 								</Stack>
 							)}
@@ -427,6 +424,19 @@ function Main() {
 								</Link>
 							))}
 						</Stack>
+					)}
+					{item.content.authorName && (
+						<Text color="#0072B2" fontSize={14}>
+							<Stack direction="row" spacing="3px">
+								<Center>
+									<Icon16UserOutline />
+								</Center>
+
+								<Center>
+									<span>{item.content.authorName}</span>
+								</Center>
+							</Stack>
+						</Text>
 					)}
 				</Stack>
 			</Box>
