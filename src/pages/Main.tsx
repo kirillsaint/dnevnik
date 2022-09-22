@@ -32,6 +32,7 @@ import parse from "html-react-parser";
 import "moment/locale/ru";
 import Linkify from "react-linkify";
 import { Icon20DocumentOutline, Icon16UserOutline } from "@vkontakte/icons";
+import Lesson from "../components/Lesson";
 
 function Main() {
 	const { colorMode } = useColorMode();
@@ -293,67 +294,6 @@ function Main() {
 		);
 	};
 
-	const Lesson = ({ lesson }: any) => (
-		<Stack direction="column" spacing="1px">
-			<Stack direction="column" spacing="1px" m="20px" mt="10px" mb="10px">
-				<Stack direction="row" justifyContent="space-between">
-					<Text fontSize={18}>
-						{lesson.number}. {lesson.subject.name}
-					</Text>
-					{lesson.hours.startHour && (
-						<Text fontWeight="bold" color="#AAAAAA">
-							{lesson.hours.startHour}:{lesson.hours.startMinute} –{" "}
-							{lesson.hours.endHour}:{lesson.hours.endMinute}
-						</Text>
-					)}
-				</Stack>
-				{lesson.workMarks.length !== 0 && (
-					<Stack direction="row" spacing="2px">
-						{lesson.workMarks.map((mark: any) => {
-							let bgColor: string = "";
-
-							switch (mark.marks[0].mood) {
-								case "Good":
-									bgColor = "rgba(0, 255, 25, 0.5)";
-									break;
-								case "Average":
-									bgColor = "rgba(255, 122, 0, 0.5)";
-									break;
-								case "Bad":
-									bgColor = "rgba(255, 0, 0, 0.5)";
-									break;
-							}
-
-							return (
-								<Box
-									alignItems="center"
-									borderRadius="6px"
-									color="white"
-									display="flex"
-									fontSize="16px"
-									justifyContent="center"
-									userSelect="none"
-									minW="28px"
-									minH="28px"
-									overflow="hidden"
-									bgColor={bgColor}
-								>
-									<Heading fontSize={14}>{mark.marks[0].value}</Heading>
-								</Box>
-							);
-						})}
-					</Stack>
-				)}
-				{lesson.homework?.text && (
-					<Text className="homework" fontSize={14} color="#AAAAAA">
-						<Linkify>{lesson.homework.text}</Linkify>
-					</Text>
-				)}
-			</Stack>
-			<Divider opacity="1" borderColor={border} />
-		</Stack>
-	);
-
 	const NewsBlock = ({ item, isLoading }: any) => {
 		return item.type === "Post" ? (
 			<Box
@@ -507,7 +447,7 @@ function Main() {
 								</Stack>
 							</Box>
 							<Divider opacity="1" borderColor={border} />
-							<Tabs>
+							<Tabs pb={"0px"}>
 								<TabList borderBottomColor={border} borderBottom="1px">
 									<Stack
 										direction="row"
@@ -523,7 +463,7 @@ function Main() {
 									</Stack>
 								</TabList>
 								<TabPanels>
-									<TabPanel padding={0} paddingBottom={5}>
+									<TabPanel padding={0}>
 										{(todayLessons !== null && (
 											<>
 												{todayLessons.length === 0 && (
@@ -536,8 +476,13 @@ function Main() {
 														</Text>
 													</Center>
 												)}
-												{todayLessons.map((item: any) => (
-													<Lesson lesson={item} />
+												{todayLessons.map((item: any, key: number) => (
+													<Lesson
+														lesson={item}
+														isLast={
+															key + 1 === todayLessons.length ? true : false
+														}
+													/>
 												))}
 											</>
 										)) || (
@@ -557,13 +502,15 @@ function Main() {
 														>
 															<SkeletonText noOfLines={2} />
 														</Stack>
-														<Divider opacity="1" borderColor={border} />
+														{key !== 6 && (
+															<Divider opacity="1" borderColor={border} />
+														)}
 													</Stack>
 												))}
 											</>
 										)}
 									</TabPanel>
-									<TabPanel padding={0} paddingBottom={5}>
+									<TabPanel padding={0}>
 										{(tomorrowLessons !== null && (
 											<>
 												{tomorrowLessons.length === 0 && (
@@ -576,8 +523,13 @@ function Main() {
 														</Text>
 													</Center>
 												)}
-												{tomorrowLessons.map((item: any) => (
-													<Lesson lesson={item} />
+												{tomorrowLessons.map((item: any, key: number) => (
+													<Lesson
+														lesson={item}
+														isLast={
+															key + 1 === todayLessons.length ? true : false
+														}
+													/>
 												))}
 											</>
 										)) || (
@@ -597,7 +549,9 @@ function Main() {
 														>
 															<SkeletonText noOfLines={2} />
 														</Stack>
-														<Divider opacity="1" borderColor={border} />
+														{key !== 6 && (
+															<Divider opacity="1" borderColor={border} />
+														)}
 													</Stack>
 												))}
 											</>

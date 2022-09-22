@@ -9,10 +9,6 @@ import {
 	SimpleGrid,
 	Divider,
 	Container,
-	Button,
-	ButtonGroup,
-	Skeleton,
-	SkeletonText,
 	Spinner,
 	useColorMode,
 	IconButton,
@@ -25,6 +21,7 @@ import {
 	Icon28ArrowRightOutline,
 	Icon28ArrowLeftOutline,
 } from "@vkontakte/icons";
+import Lesson from "../components/Lesson";
 
 function Schedule() {
 	const { colorMode } = useColorMode();
@@ -115,6 +112,13 @@ function Schedule() {
 		} | null;
 		number: number | string;
 		workMarks: IMark[];
+		hours: {
+			startHour?: string | number;
+			startMinute?: string | number;
+			endHour?: string | number;
+			endMinute?: string | number;
+		};
+		isCanceled: boolean;
 	}
 
 	interface IMark {
@@ -135,82 +139,10 @@ function Schedule() {
 						<Stack direction="column" spacing="0px">
 							{day.lessons.map((lesson, key) => {
 								return (
-									<Stack direction="column" spacing="1px">
-										<Stack
-											direction={["column", "row"]}
-											spacing={["10px", "0px"]}
-											m="20px"
-											mt="10px"
-											mb="10px"
-											justifyContent="space-between"
-										>
-											<Stack
-												direction={["column", "row"]}
-												spacing={["10px", "50px"]}
-											>
-												<Stack direction="column" spacing="1px">
-													<Text fontSize={18}>{lesson.subject.name}</Text>
-
-													<Text fontSize={14} color="#AAAAAA">
-														{lesson.number} урок
-													</Text>
-												</Stack>
-												{lesson.workMarks.length !== 0 && (
-													<Stack direction="row" spacing="2px">
-														{lesson.workMarks.map((mark: any) => {
-															let bgColor: string = "";
-
-															switch (mark.marks[0].mood) {
-																case "Good":
-																	bgColor = "rgba(0, 255, 25, 0.5)";
-																	break;
-																case "Average":
-																	bgColor = "rgba(255, 122, 0, 0.5)";
-																	break;
-																case "Bad":
-																	bgColor = "rgba(255, 0, 0, 0.5)";
-																	break;
-															}
-
-															return (
-																<Center>
-																	<Box
-																		alignItems="center"
-																		borderRadius="6px"
-																		color="white"
-																		display="flex"
-																		fontSize="16px"
-																		justifyContent="center"
-																		userSelect="none"
-																		minW="35px"
-																		minH="35px"
-																		overflow="hidden"
-																		bgColor={bgColor}
-																	>
-																		<Heading fontSize={20}>
-																			{mark.marks[0].value}
-																		</Heading>
-																	</Box>
-																</Center>
-															);
-														})}
-													</Stack>
-												)}
-											</Stack>
-											<Text
-												maxW={["auto", "200px"]}
-												overflow="hidden"
-												fontSize={14}
-												color="#AAAAAA"
-												className="homework"
-											>
-												<Linkify>{lesson.homework?.text}</Linkify>
-											</Text>
-										</Stack>
-										{key + 1 !== day.lessons.length && (
-											<Divider opacity="1" borderColor={border} />
-										)}
-									</Stack>
+									<Lesson
+										lesson={lesson}
+										isLast={key + 1 === day.lessons.length ? true : false}
+									/>
 								);
 							})}
 						</Stack>
