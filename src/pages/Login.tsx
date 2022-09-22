@@ -11,6 +11,7 @@ import {
 	useToast,
 	useColorModeValue,
 	useColorMode,
+	Checkbox,
 } from "@chakra-ui/react";
 import React from "react";
 import { login } from "../hooks/Auth";
@@ -38,18 +39,20 @@ function Login() {
 	type FormData = {
 		login: string;
 		password: string;
+		disableLog: boolean;
 	};
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		setValue,
 	} = useForm<FormData>();
 
 	const onSubmit = handleSubmit(async (data) => {
 		setIsLoading(true);
 		try {
-			const res = await login(data.login, data.password);
+			const res = await login(data.login, data.password, data.disableLog);
 			if (!res.error) {
 				window.location.href = "/";
 				return;
@@ -179,6 +182,15 @@ function Login() {
 								</Button>
 							</Center>
 						</Stack>
+						<Center mt={10}>
+							<Checkbox
+								colorScheme="gray"
+								onChange={(e: any) => setValue("disableLog", e.target.checked)}
+								isDisabled={isLoading}
+							>
+								Отключить логирование
+							</Checkbox>
+						</Center>
 					</form>
 				</Stack>
 			</Center>
