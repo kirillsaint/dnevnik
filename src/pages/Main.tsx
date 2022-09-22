@@ -461,7 +461,7 @@ function Main() {
 													<Lesson
 														lesson={item}
 														isLast={
-															key + 1 === todayLessons.length ? true : false
+															key + 1 === tomorrowLessons.length ? true : false
 														}
 													/>
 												))}
