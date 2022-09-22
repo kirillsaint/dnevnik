@@ -3,11 +3,9 @@ import { getScheduleWeek } from "../hooks/Api";
 import {
 	Box,
 	Stack,
-	Heading,
 	Text,
 	Center,
 	SimpleGrid,
-	Divider,
 	Container,
 	Spinner,
 	useColorMode,

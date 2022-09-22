@@ -22,12 +22,7 @@ import {
 import { getUser, UserData } from "../hooks/Auth";
 import Loader from "../components/Loader";
 import "../css/main.css";
-import {
-	getImportant,
-	getTodayAndTomorrowLessons,
-	getLessonInfo,
-	getMainContent,
-} from "../hooks/Api";
+import { getMainContent } from "../hooks/Api";
 import moment from "moment";
 import parse from "html-react-parser";
 import "moment/locale/ru";
