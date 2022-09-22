@@ -26,6 +26,7 @@ import {
 	getImportant,
 	getTodayAndTomorrowLessons,
 	getLessonInfo,
+	getMainContent,
 } from "../hooks/Api";
 import moment from "moment";
 import parse from "html-react-parser";
@@ -99,77 +100,15 @@ function Main() {
 		const getInfo = async () => {
 			setUser(getUser());
 			try {
-				const important = await getImportant();
-				setNews(important.feed);
-				try {
-					if (important.recentMarks.length === 0) {
-						setRecentMarks([]);
-					} else {
-						let marks: any = [];
-
-						for (const mark of important.recentMarks) {
-							let lesson = await getLessonInfo(mark.lesson.id);
-
-							marks.push({
-								lesson: {
-									date: mark.lesson.date,
-									id: mark.lesson.id,
-									name: lesson.subject.name,
-								},
-								marks: mark.marks,
-							});
-						}
-
-						setRecentMarks(marks);
-					}
-				} catch {
-					if (important.recentMarks === null) {
-						setRecentMarks([]);
-					} else {
-						let marks: any = [];
-
-						for (const mark of important.recentMarks) {
-							let lesson = await getLessonInfo(mark.lesson.id);
-
-							marks.push({
-								lesson: {
-									date: mark.lesson.date,
-									id: mark.lesson.id,
-									name: lesson.subject.name,
-								},
-								marks: mark.marks,
-							});
-						}
-
-						setRecentMarks(marks);
-					}
-				}
+				const content = await getMainContent();
+				setTodayLessons(content.todayLessons);
+				setTomorrowLessons(content.tomorrowLessons);
+				setRecentMarks(content.recentMarks);
+				setNews(content.news);
 			} catch (e) {
+				console.log(e);
 				toast({
-					title: "Произошла ошибка при получении новостей и расписания",
-					description: `${e}`,
-					status: "error",
-					duration: 3000,
-					isClosable: true,
-					position: isMobile ? "top" : "bottom",
-				});
-			}
-			try {
-				const lessons = await getTodayAndTomorrowLessons();
-				if (lessons.today.length !== 0) {
-					setTodayLessons(lessons.today[0].lessons);
-				} else {
-					setTodayLessons([]);
-				}
-
-				if (lessons.tomorrow.length !== 0) {
-					setTomorrowLessons(lessons.tomorrow[0].lessons);
-				} else {
-					setTomorrowLessons([]);
-				}
-			} catch (e) {
-				toast({
-					title: "Произошла ошибка при получении расписания",
+					title: "Произошла ошибка!",
 					description: `${e}`,
 					status: "error",
 					duration: 3000,
