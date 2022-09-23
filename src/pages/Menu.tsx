@@ -132,6 +132,7 @@ function Menu() {
 									isChecked={settings?.replaceBadMarks ? true : false}
 									onChange={(e: any) => {
 										updateSettings("replaceBadMarks", e.target.checked);
+										setSettings(getSettings());
 									}}
 								/>
 							</Center>
@@ -155,6 +156,7 @@ function Menu() {
 									isChecked={settings?.showName ? true : false}
 									onChange={(e: any) => {
 										updateSettings("showName", e.target.checked);
+										setSettings(getSettings());
 									}}
 								/>
 							</Center>
@@ -178,6 +180,7 @@ function Menu() {
 									isChecked={settings?.showSchool ? true : false}
 									onChange={(e: any) => {
 										updateSettings("showSchool", e.target.checked);
+										setSettings(getSettings());
 									}}
 								/>
 							</Center>
