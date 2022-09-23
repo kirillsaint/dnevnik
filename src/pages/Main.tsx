@@ -401,7 +401,7 @@ function Main() {
 										{(todayLessons !== null && (
 											<>
 												{todayLessons.length === 0 && (
-													<Center paddingTop={5}>
+													<Center paddingTop={5} paddingBottom={5}>
 														<Text
 															color="rgba(187, 187, 187, 1)"
 															fontWeight="bold"
@@ -448,7 +448,7 @@ function Main() {
 										{(tomorrowLessons !== null && (
 											<>
 												{tomorrowLessons.length === 0 && (
-													<Center paddingTop={5}>
+													<Center paddingTop={5} paddingBottom={5}>
 														<Text
 															color="rgba(187, 187, 187, 1)"
 															fontWeight="bold"
