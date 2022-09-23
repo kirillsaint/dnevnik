@@ -132,7 +132,7 @@ function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 							<Stack direction="column" spacing="0px">
 								<Text>{lesson.subject.name}</Text>
 								{lesson.theme && (
-									<Text fontSize={16} color="gray.500">
+									<Text fontSize={16} color="#aaa">
 										{lesson.theme}
 									</Text>
 								)}
