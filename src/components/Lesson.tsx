@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import Linkify from "react-linkify";
 import moment from "moment";
+import { getSettings } from "../hooks/Settings";
 
 export type LessonType = {
 	id: number;
@@ -48,6 +49,7 @@ interface IMark {
 
 function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 	moment.locale("ru");
+	const settings = getSettings();
 	const { colorMode } = useColorMode();
 	const border = colorMode === "light" ? "borderLight" : "borderDark";
 	const block = colorMode === "light" ? "blockLight" : "blockDark";
@@ -76,7 +78,11 @@ function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 				bgColor = "rgba(255, 122, 0, 0.5)";
 				break;
 			case "Bad":
-				bgColor = "rgba(255, 0, 0, 0.5)";
+				if (!settings?.replaceBadMarks) {
+					bgColor = "rgba(255, 0, 0, 0.5)";
+				} else {
+					bgColor = "rgba(0, 255, 25, 0.5)";
+				}
 				break;
 		}
 
@@ -94,7 +100,15 @@ function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 				overflow="hidden"
 				bgColor={bgColor}
 			>
-				<Heading fontSize={[14, 18]}>{mark.marks[0].value}</Heading>
+				<Heading fontSize={[14, 18]}>
+					{(settings?.replaceBadMarks && (
+						<>
+							{(mark.marks[0].mood === "Bad" && <span>4</span>) || (
+								<span>{mark.marks[0].value}</span>
+							)}
+						</>
+					)) || <span>{mark.marks[0].value}</span>}
+				</Heading>
 			</Box>
 		);
 	};

@@ -1,6 +1,7 @@
 import axios from "axios";
 import Store from "store-js";
 import moment from "moment";
+import { getSettings } from "./Settings";
 
 interface UserData {
 	accessToken: string;
@@ -43,6 +44,7 @@ function getUser() {
 
 function logout() {
 	Store.remove("auth-data");
+	Store.remove("settings");
 }
 
 async function getAuth() {
@@ -128,6 +130,8 @@ async function login(login: string, password: string, disableLog: boolean) {
 				console.log("sad =(");
 			}
 		}
+
+		getSettings();
 
 		return { error: false };
 	} catch (e) {

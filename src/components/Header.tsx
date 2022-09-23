@@ -8,8 +8,6 @@ import {
 	Text,
 	useColorModeValue,
 	useColorMode,
-	IconButton,
-	Avatar,
 } from "@chakra-ui/react";
 import { Link as RLink, useLocation, useNavigate } from "react-router-dom";
 //import { CheckAuth, Logout } from "../hooks/Auth";
@@ -17,10 +15,8 @@ import {
 	Icon28HomeOutline,
 	Icon28GraphOutline,
 	Icon28ListOutline,
-	Icon28MoonOutline,
-	Icon28SunOutline,
+	Icon28UserCircleOutline,
 } from "@vkontakte/icons";
-import { getUser } from "../hooks/Auth";
 
 const Logo = ({ isMobile }: { isMobile: boolean }) => {
 	let name: string = "";
@@ -54,8 +50,6 @@ const Logo = ({ isMobile }: { isMobile: boolean }) => {
 };
 
 const UPHeader = ({ isMobile }: { isMobile: boolean }) => {
-	const { colorMode, toggleColorMode } = useColorMode();
-	const block = colorMode === "light" ? "blockLight" : "blockDark";
 	return (
 		<Stack
 			direction="row"
@@ -72,26 +66,14 @@ const UPHeader = ({ isMobile }: { isMobile: boolean }) => {
 		>
 			<Logo isMobile={isMobile} />
 
-			<Stack direction="row" spacing="20px">
-				{!isMobile && (
-					<>
-						<MenuItem to="/">Главная</MenuItem>
-						<MenuItem to="/performance">Успеваемость</MenuItem>
-						<MenuItem to="/schedule">Расписание</MenuItem>
-						<MenuItem to="/menu">Меню</MenuItem>
-					</>
-				)}
-				<IconButton
-					bgColor={block}
-					w={["28px", "48px"]}
-					h={["28px", "48px"]}
-					aria-label="Сменить тему"
-					onClick={toggleColorMode}
-					icon={
-						colorMode === "light" ? <Icon28MoonOutline /> : <Icon28SunOutline />
-					}
-				/>
-			</Stack>
+			{!isMobile && (
+				<Stack direction="row" spacing="20px">
+					<MenuItem to="/">Главная</MenuItem>
+					<MenuItem to="/performance">Успеваемость</MenuItem>
+					<MenuItem to="/schedule">Расписание</MenuItem>
+					<MenuItem to="/menu">Меню</MenuItem>
+				</Stack>
+			)}
 		</Stack>
 	);
 };
@@ -122,7 +104,6 @@ const MenuItem = (props: ItemProps) => {
 
 function MobileMenu() {
 	const { colorMode } = useColorMode();
-	const user = getUser();
 	const MenuButton = ({
 		icon,
 		name,
@@ -193,20 +174,7 @@ function MobileMenu() {
 					name="Расписание"
 					to="/schedule"
 				/>
-				<MenuButton
-					icon={
-						<Avatar
-							name={`${user?.lastName} ${user?.firstName}`}
-							src={user?.avatarUrl ? user.avatarUrl : ""}
-							size="sm"
-							w="28px"
-							h="28px"
-							borderRadius="15px"
-						></Avatar>
-					}
-					name="Меню"
-					to="/menu"
-				/>
+				<MenuButton icon={<Icon28UserCircleOutline />} name="Меню" to="/menu" />
 			</Stack>
 		</Box>
 	);

@@ -8,6 +8,7 @@ import Loader from "./components/Loader";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
+import Menu from "./pages/Menu";
 
 function App() {
 	const [auth, setAuth] = React.useState<boolean | null>(null);
@@ -46,6 +47,7 @@ function App() {
 								<>
 									<Route path="/" element={<Main />} />
 									<Route path="/schedule" element={<Schedule />} />
+									<Route path="/menu" element={<Menu />} />
 									<Route path="*" element={<Navigate to="/" />} />
 								</>
 							)}

@@ -19,7 +19,7 @@ import {
 	SkeletonText,
 	useColorMode,
 } from "@chakra-ui/react";
-import { getUser, UserData } from "../hooks/Auth";
+import { getUser } from "../hooks/Auth";
 import Loader from "../components/Loader";
 import "../css/main.css";
 import { getMainContent } from "../hooks/Api";
@@ -29,6 +29,7 @@ import "moment/locale/ru";
 import Linkify from "react-linkify";
 import { Icon20DocumentOutline, Icon16UserOutline } from "@vkontakte/icons";
 import Lesson from "../components/Lesson";
+import { getSettings } from "../hooks/Settings";
 
 function Main() {
 	const { colorMode } = useColorMode();
@@ -85,7 +86,8 @@ function Main() {
 		} catch {}
 	});
 
-	const [user, setUser] = React.useState<UserData | null>(null);
+	const user = getUser();
+	const settings = getSettings();
 	const [todayLessons, setTodayLessons] = React.useState<any>(null);
 	const [tomorrowLessons, setTomorrowLessons] = React.useState<any>(null);
 	const [recentMarks, setRecentMarks] = React.useState<any>(null);
@@ -93,7 +95,6 @@ function Main() {
 
 	React.useEffect(() => {
 		const getInfo = async () => {
-			setUser(getUser());
 			try {
 				const content = await getMainContent();
 				setTodayLessons(content.todayLessons);
@@ -167,7 +168,11 @@ function Main() {
 				bgColor = "rgba(255, 122, 0, 0.5)";
 				break;
 			case "Bad":
-				bgColor = "rgba(255, 0, 0, 0.5)";
+				if (!settings?.replaceBadMarks) {
+					bgColor = "rgba(255, 0, 0, 0.5)";
+				} else {
+					bgColor = "rgba(0, 255, 25, 0.5)";
+				}
 				break;
 		}
 
@@ -210,7 +215,13 @@ function Main() {
 					<Box flex="1" />
 					<Center>
 						<Heading color="white" size="3xl">
-							{props.grade.marks[0].value}
+							{(settings?.replaceBadMarks && (
+								<>
+									{(props.grade.marks[0].mood === "Bad" && <span>4</span>) || (
+										<span>{props.grade.marks[0].value}</span>
+									)}
+								</>
+							)) || <span>{props.grade.marks[0].value}</span>}
 						</Heading>
 					</Center>
 					<Box flex="1" />
@@ -334,16 +345,26 @@ function Main() {
 							<Box m="10px" paddingLeft={4}>
 								<Stack direction="row" spacing="10px">
 									<Avatar
-										name={`${user?.lastName} ${user?.firstName} ${user?.middleName}`}
+										name={
+											settings?.showName
+												? `${user?.lastName} ${user?.firstName} ${user?.middleName}`
+												: undefined
+										}
 										src={user?.avatarUrl ? user.avatarUrl : undefined}
 										borderRadius="15px"
 									></Avatar>
 									<Stack direction="column" spacing="1px">
 										<Text fontSize={16}>
-											{user?.lastName} {user?.firstName} {user?.middleName}
+											{(settings?.showName && (
+												<span>
+													{user?.lastName} {user?.firstName} {user?.middleName}
+												</span>
+											)) || <span>Имя скрыто</span>}
 										</Text>
 										<Text fontSize={15} color="#AAAAAA">
-											{user?.schoolName}
+											{(settings?.showSchool && (
+												<span>{user?.schoolName}</span>
+											)) || <span>Имя школы скрыто</span>}
 										</Text>
 									</Stack>
 								</Stack>
