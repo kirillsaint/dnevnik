@@ -9,6 +9,7 @@ import {
 	useColorModeValue,
 	useColorMode,
 	IconButton,
+	Avatar,
 } from "@chakra-ui/react";
 import { Link as RLink, useLocation, useNavigate } from "react-router-dom";
 //import { CheckAuth, Logout } from "../hooks/Auth";
@@ -19,6 +20,7 @@ import {
 	Icon28MoonOutline,
 	Icon28SunOutline,
 } from "@vkontakte/icons";
+import { getUser } from "../hooks/Auth";
 
 const Logo = ({ isMobile }: { isMobile: boolean }) => {
 	let name: string = "";
@@ -31,6 +33,9 @@ const Logo = ({ isMobile }: { isMobile: boolean }) => {
 			break;
 		case "/schedule":
 			name = "Расписание";
+			break;
+		case "/menu":
+			name = "Меню";
 			break;
 		default:
 			name = "Страница не найдена";
@@ -73,6 +78,7 @@ const UPHeader = ({ isMobile }: { isMobile: boolean }) => {
 						<MenuItem to="/">Главная</MenuItem>
 						<MenuItem to="/performance">Успеваемость</MenuItem>
 						<MenuItem to="/schedule">Расписание</MenuItem>
+						<MenuItem to="/menu">Меню</MenuItem>
 					</>
 				)}
 				<IconButton
@@ -116,6 +122,7 @@ const MenuItem = (props: ItemProps) => {
 
 function MobileMenu() {
 	const { colorMode } = useColorMode();
+	const user = getUser();
 	const MenuButton = ({
 		icon,
 		name,
@@ -185,6 +192,20 @@ function MobileMenu() {
 					icon={<Icon28ListOutline />}
 					name="Расписание"
 					to="/schedule"
+				/>
+				<MenuButton
+					icon={
+						<Avatar
+							name={`${user?.lastName} ${user?.firstName}`}
+							src={user?.avatarUrl ? user.avatarUrl : ""}
+							size="sm"
+							w="28px"
+							h="28px"
+							borderRadius="15px"
+						></Avatar>
+					}
+					name="Меню"
+					to="/menu"
 				/>
 			</Stack>
 		</Box>
