@@ -103,7 +103,7 @@ function Schedule() {
 			<Stack direction="column" spacing="5px">
 				<Text>{dayName}</Text>
 				<Box
-					bgColor="blockColor"
+					bgColor={block}
 					borderRadius="15px"
 					border="1px solid"
 					borderColor={border}
