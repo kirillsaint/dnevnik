@@ -18,7 +18,7 @@ import {
 	Icon28ArrowRightOutline,
 	Icon28ArrowLeftOutline,
 } from "@vkontakte/icons";
-import Lesson from "../components/Lesson";
+import Lesson, { LessonType } from "../components/Lesson";
 
 function Schedule() {
 	const { colorMode } = useColorMode();
@@ -95,31 +95,7 @@ function Schedule() {
 
 	interface IDay {
 		date: number;
-		lessons: ILesson[];
-	}
-
-	interface ILesson {
-		id: number;
-		subject: {
-			id: number;
-			name: string;
-		};
-		homework: {
-			text: string;
-		} | null;
-		number: number | string;
-		workMarks: IMark[];
-		hours: {
-			startHour?: string | number;
-			startMinute?: string | number;
-			endHour?: string | number;
-			endMinute?: string | number;
-		};
-		isCanceled: boolean;
-	}
-
-	interface IMark {
-		marks: { mood: string; value: string }[];
+		lessons: LessonType[];
 	}
 
 	const Day = ({ day, dayName }: { day: IDay | null; dayName: string }) => {

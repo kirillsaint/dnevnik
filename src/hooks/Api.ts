@@ -102,100 +102,116 @@ async function getScheduleWeek(dates: any) {
 
 	if (!user) return { error: "not auth" };
 	let schedule: any = [];
-	let res = await axios.get(
+	let resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[0]}&finishDate=${dates[1]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	let res: any = null;
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[1]}&finishDate=${dates[2]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[2]}&finishDate=${dates[3]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[3]}&finishDate=${dates[4]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[4]}&finishDate=${dates[5]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[5]}&finishDate=${dates[6]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
 
-	res = await axios.get(
+	resText = await axios.get(
 		`https://api.dnevnik.ru/mobile/v3/persons/${user.personId}/schools/${context.contextPersons[0].school.id}/groups/${context.contextPersons[0].group.id}/diary?startDate=${dates[6]}&finishDate=${dates[7]}`,
 		{
 			headers: {
 				accessToken: user.accessToken,
 			},
+			transformResponse: [(data) => data],
 		}
 	);
-	if (res.data.days.length !== 0) {
-		schedule.push(res.data.days[0]);
+	res = JSONbig.parse(resText.data);
+	if (res.days.length !== 0) {
+		schedule.push(res.days[0]);
 	} else {
 		schedule.push(null);
 	}
