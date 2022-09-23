@@ -65,95 +65,6 @@ function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 
 	const isMobile = width <= 768;
 
-	const LessonInfo = () => (
-		<Drawer
-			placement={isMobile ? "bottom" : "right"}
-			onClose={onClose}
-			isOpen={isOpen}
-		>
-			<DrawerOverlay />
-			<DrawerContent bgColor={block}>
-				<DrawerCloseButton />
-				<DrawerHeader borderBottomWidth="1px" borderBottomColor={border}>
-					<Stack direction="column" spacing="10px">
-						<Stack direction="column" spacing="0px">
-							{lesson.startTime && (
-								<Text fontSize={16}>
-									{lesson.hours.startHour}:{lesson.hours.startMinute} –{" "}
-									{lesson.hours.endHour}:{lesson.hours.endMinute},{" "}
-									{moment.unix(lesson.startTime).format("LL")}
-								</Text>
-							)}
-							<Text fontSize={16}>
-								{lesson.number} урок
-								{lesson.place && <span>, {lesson.place}</span>}
-								{lesson.isCanceled && (
-									<span>
-										, <span style={{ color: "red" }}>отменен</span>
-									</span>
-								)}
-							</Text>
-						</Stack>
-						<Stack direction="column" spacing="0px">
-							<Text>{lesson.subject.name}</Text>
-							{lesson.theme && (
-								<Text fontSize={16} color="gray.500">
-									{lesson.theme}
-								</Text>
-							)}
-						</Stack>
-					</Stack>
-				</DrawerHeader>
-				<DrawerBody padding={0}>
-					<Stack direction="column">
-						<Box borderBottomWidth="1px" borderBottomColor={border}>
-							<Stack
-								direction="column"
-								spacing={lesson.workMarks.length === 0 ? "0px" : "5px"}
-								padding={5}
-								paddingTop={2}
-								paddingBottom={2}
-							>
-								<Text fontWeight="bold" fontSize={18}>
-									Оценки
-								</Text>
-								{(lesson.workMarks.length === 0 && (
-									<Text fontSize={16}>Оценок нет</Text>
-								)) || (
-									<Stack direction="row" spacing="2px">
-										{lesson.workMarks.map((mark: any) => (
-											<Mark mark={mark} />
-										))}
-									</Stack>
-								)}
-							</Stack>
-						</Box>
-						<Box borderBottomWidth="1px" borderBottomColor={border}>
-							<Stack
-								direction="column"
-								spacing="0px"
-								padding={5}
-								paddingTop={2}
-								paddingBottom={2}
-							>
-								<Text fontWeight="bold" fontSize={18}>
-									Домашнее задание
-								</Text>
-								<Text fontSize={16} className="homework">
-									<Linkify>
-										{lesson.homework?.text
-											? lesson.homework.text
-											: "Нет домашнего задания"}
-									</Linkify>
-								</Text>
-							</Stack>
-						</Box>
-					</Stack>
-				</DrawerBody>
-			</DrawerContent>
-		</Drawer>
-	);
-
 	const Mark = ({ mark }: any) => {
 		let bgColor: string = "";
 
@@ -190,7 +101,92 @@ function Lesson({ lesson, isLast }: { lesson: LessonType; isLast?: boolean }) {
 
 	return (
 		<Stack direction="column" spacing="1px">
-			<LessonInfo />
+			<Drawer
+				placement={isMobile ? "bottom" : "right"}
+				onClose={onClose}
+				isOpen={isOpen}
+			>
+				<DrawerOverlay />
+				<DrawerContent bgColor={block}>
+					<DrawerCloseButton />
+					<DrawerHeader borderBottomWidth="1px" borderBottomColor={border}>
+						<Stack direction="column" spacing="10px">
+							<Stack direction="column" spacing="0px">
+								{lesson.startTime && (
+									<Text fontSize={16}>
+										{lesson.hours.startHour}:{lesson.hours.startMinute} –{" "}
+										{lesson.hours.endHour}:{lesson.hours.endMinute},{" "}
+										{moment.unix(lesson.startTime).format("LL")}
+									</Text>
+								)}
+								<Text fontSize={16}>
+									{lesson.number} урок
+									{lesson.place && <span>, {lesson.place}</span>}
+									{lesson.isCanceled && (
+										<span>
+											, <span style={{ color: "red" }}>отменен</span>
+										</span>
+									)}
+								</Text>
+							</Stack>
+							<Stack direction="column" spacing="0px">
+								<Text>{lesson.subject.name}</Text>
+								{lesson.theme && (
+									<Text fontSize={16} color="gray.500">
+										{lesson.theme}
+									</Text>
+								)}
+							</Stack>
+						</Stack>
+					</DrawerHeader>
+					<DrawerBody padding={0}>
+						<Stack direction="column">
+							<Box borderBottomWidth="1px" borderBottomColor={border}>
+								<Stack
+									direction="column"
+									spacing={lesson.workMarks.length === 0 ? "0px" : "5px"}
+									padding={5}
+									paddingTop={2}
+									paddingBottom={2}
+								>
+									<Text fontWeight="bold" fontSize={18}>
+										Оценки
+									</Text>
+									{(lesson.workMarks.length === 0 && (
+										<Text fontSize={16}>Оценок нет</Text>
+									)) || (
+										<Stack direction="row" spacing="2px">
+											{lesson.workMarks.map((mark: any) => (
+												<Mark mark={mark} />
+											))}
+										</Stack>
+									)}
+								</Stack>
+							</Box>
+							<Box borderBottomWidth="1px" borderBottomColor={border}>
+								<Stack
+									direction="column"
+									spacing="0px"
+									padding={5}
+									paddingTop={2}
+									paddingBottom={2}
+								>
+									<Text fontWeight="bold" fontSize={18}>
+										Домашнее задание
+									</Text>
+									<Text fontSize={16} className="homework">
+										<Linkify>
+											{lesson.homework?.text
+												? lesson.homework.text
+												: "Нет домашнего задания"}
+										</Linkify>
+									</Text>
+								</Stack>
+							</Box>
+						</Stack>
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
 			<Stack direction="column" spacing="1px" m="20px" mt="10px" mb="10px">
 				<Stack direction="row" justifyContent="space-between">
 					<Link fontSize={18} onClick={onOpen}>
