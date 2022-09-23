@@ -45,6 +45,7 @@ function getUser() {
 function logout() {
 	Store.remove("auth-data");
 	Store.remove("settings");
+	Store.remove("chakra-ui-color-mode");
 }
 
 async function getAuth() {
