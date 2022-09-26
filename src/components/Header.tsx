@@ -124,7 +124,8 @@ function MobileMenu() {
 					navigate(to);
 				}}
 				_active={{
-					bgColor: "rgba(0,0,0,.04)",
+					bgColor:
+						colorMode === "light" ? "rgba(0,0,0,.04)" : "rgba(0,0,0,0.1)",
 					textDecoration: "none",
 					borderRadius: "10px",
 				}}
