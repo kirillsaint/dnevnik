@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Container } from "@chakra-ui/react";
 import ScrollToTop from "./components/ScrollToTop";
 import Header from "./components/Header";
@@ -27,7 +27,7 @@ function App() {
 		checkAuth();
 	}, []);
 	return (
-		<BrowserRouter>
+		<HashRouter>
 			<ScrollToTop />
 			{auth && <Header />}
 			<Container
@@ -55,7 +55,7 @@ function App() {
 					)}
 				</Routes>
 			</Container>
-		</BrowserRouter>
+		</HashRouter>
 	);
 }
 
