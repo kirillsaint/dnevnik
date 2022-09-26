@@ -30,6 +30,7 @@ import Linkify from "react-linkify";
 import { Icon20DocumentOutline, Icon16UserOutline } from "@vkontakte/icons";
 import Lesson from "../components/Lesson";
 import { getSettings } from "../hooks/Settings";
+import { getCache, setCache } from "../hooks/Cache";
 
 function Main() {
 	const { colorMode } = useColorMode();
@@ -96,7 +97,14 @@ function Main() {
 	React.useEffect(() => {
 		const getInfo = async () => {
 			try {
-				const content = await getMainContent();
+				let content: any = null;
+				let cache = getCache("mainData");
+				if (!cache) {
+					content = await getMainContent();
+					setCache("mainData", JSON.stringify(content));
+				} else {
+					content = JSON.parse(cache);
+				}
 				setTodayLessons(content.todayLessons);
 				setTomorrowLessons(content.tomorrowLessons);
 				setRecentMarks(content.recentMarks);
