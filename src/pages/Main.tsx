@@ -31,6 +31,8 @@ import { Icon20DocumentOutline, Icon16UserOutline } from "@vkontakte/icons";
 import Lesson from "../components/Lesson";
 import { getSettings } from "../hooks/Settings";
 import { getCache, setCache } from "../hooks/Cache";
+import PullToRefresh from "react-simple-pull-to-refresh";
+import RefreshSpinner from "../components/RefreshSpinner";
 
 function Main() {
 	const { colorMode } = useColorMode();
@@ -336,229 +338,261 @@ function Main() {
 		) : null;
 	};
 
+	const onRefresh = async () => {
+		try {
+			const content = await getMainContent();
+			setCache("mainData", JSON.stringify(content));
+
+			setTodayLessons(content.todayLessons);
+			setTomorrowLessons(content.tomorrowLessons);
+			setRecentMarks(content.recentMarks);
+			setNews(content.news);
+		} catch (e) {
+			console.log(e);
+			toast({
+				title: "Произошла ошибка!",
+				description: `${e}`,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: isMobile ? "top" : "bottom",
+			});
+		}
+	};
+
 	return (
 		<>
 			{(user === null && <Loader />) || (
-				<Stack direction={["column", "row"]} spacing={["20px", "50px"]}>
-					<Box
-						overflow="hidden"
-						w={["100%", "35%"]}
-						borderRadius="20px"
-						bgColor={block}
-						border="1px solid"
-						borderColor={border}
-						height="fit-content"
-					>
-						<Stack direction="column" spacing="1px">
-							<Box m="10px" paddingLeft={4}>
-								<Stack direction="row" spacing="10px">
-									<Avatar
-										name={
-											settings?.showName
-												? `${user?.lastName} ${user?.firstName} ${user?.middleName}`
-												: undefined
-										}
-										src={user?.avatarUrl ? user.avatarUrl : undefined}
-										borderRadius="15px"
-									></Avatar>
-									<Stack direction="column" spacing="1px">
-										<Text fontSize={16}>
-											{(settings?.showName && (
-												<span>
-													{user?.lastName} {user?.firstName} {user?.middleName}
-												</span>
-											)) || <span>Имя скрыто</span>}
-										</Text>
-										<Text fontSize={15} color="#AAAAAA">
-											{(settings?.showSchool && (
-												<span>{user?.schoolName}</span>
-											)) || <span>Имя школы скрыто</span>}
-										</Text>
+				<PullToRefresh
+					onRefresh={onRefresh}
+					isPullable={recentMarks === null ? false : true}
+					pullingContent={<RefreshSpinner loading={false} />}
+					refreshingContent={<RefreshSpinner loading={true} />}
+				>
+					<Stack direction={["column", "row"]} spacing={["20px", "50px"]}>
+						<Box
+							overflow="hidden"
+							w={["100%", "35%"]}
+							borderRadius="20px"
+							bgColor={block}
+							border="1px solid"
+							borderColor={border}
+							height="fit-content"
+						>
+							<Stack direction="column" spacing="1px">
+								<Box m="10px" paddingLeft={4}>
+									<Stack direction="row" spacing="10px">
+										<Avatar
+											name={
+												settings?.showName
+													? `${user?.lastName} ${user?.firstName} ${user?.middleName}`
+													: undefined
+											}
+											src={user?.avatarUrl ? user.avatarUrl : undefined}
+											borderRadius="15px"
+										></Avatar>
+										<Stack direction="column" spacing="1px">
+											<Text fontSize={16}>
+												{(settings?.showName && (
+													<span>
+														{user?.lastName} {user?.firstName}{" "}
+														{user?.middleName}
+													</span>
+												)) || <span>Имя скрыто</span>}
+											</Text>
+											<Text fontSize={15} color="#AAAAAA">
+												{(settings?.showSchool && (
+													<span>{user?.schoolName}</span>
+												)) || <span>Имя школы скрыто</span>}
+											</Text>
+										</Stack>
 									</Stack>
-								</Stack>
-							</Box>
-							<Divider opacity="1" borderColor={border} />
-							<Box mt="10px!important" mb="10px!important">
-								<Stack
-									className="grades"
-									direction="row"
-									cursor="grab"
-									overflow="auto"
-									overflowX="auto"
-									spacing="10px"
-									id="grades"
-								>
-									<Box />
-									<Box />
-									{(recentMarks === null && (
-										<>
-											{[1, 2, 3, 4, 5, 6].map((key) => (
-												<Grade
-													grade={{ marks: [{ id: key, mood: "Bad" }] }}
-													isLoading
-												/>
-											))}
-										</>
-									)) || (
-										<>
-											{recentMarks.map((item: any) => (
-												<Grade grade={item} />
-											))}
-										</>
-									)}
-									<Box />
-								</Stack>
-							</Box>
-							<Divider opacity="1" borderColor={border} />
-							<Tabs pb={"0px"}>
-								<TabList borderBottomColor={border} borderBottom="1px">
+								</Box>
+								<Divider opacity="1" borderColor={border} />
+								<Box mt="10px!important" mb="10px!important">
 									<Stack
+										className="grades"
 										direction="row"
-										spacing="20px"
-										w="100%"
-										pl={5}
-										pr={5}
-										pt={2}
-										pb={2}
+										cursor="grab"
+										overflow="auto"
+										overflowX="auto"
+										spacing="10px"
+										id="grades"
 									>
-										<CustomTab>Сегодня</CustomTab>
-										<CustomTab>Завтра</CustomTab>
+										<Box />
+										<Box />
+										{(recentMarks === null && (
+											<>
+												{[1, 2, 3, 4, 5, 6].map((key) => (
+													<Grade
+														grade={{ marks: [{ id: key, mood: "Bad" }] }}
+														isLoading
+													/>
+												))}
+											</>
+										)) || (
+											<>
+												{recentMarks.map((item: any) => (
+													<Grade grade={item} />
+												))}
+											</>
+										)}
+										<Box />
 									</Stack>
-								</TabList>
-								<TabPanels>
-									<TabPanel padding={0}>
-										{(todayLessons !== null && (
-											<>
-												{todayLessons.length === 0 && (
-													<Center paddingTop={5} paddingBottom={5}>
-														<Text
-															color="rgba(187, 187, 187, 1)"
-															fontWeight="bold"
-														>
-															Уроков не найдено
-														</Text>
-													</Center>
-												)}
-												{todayLessons.map((item: any, key: number) => (
-													<Lesson
-														lesson={item}
-														isLast={
-															key + 1 === todayLessons.length ? true : false
-														}
-													/>
-												))}
-											</>
-										)) || (
-											<>
-												{[1, 2, 3, 4, 5, 6].map((key) => (
-													<Stack
-														direction="column"
-														spacing="1px"
-														id={key.toString()}
-													>
+								</Box>
+								<Divider opacity="1" borderColor={border} />
+								<Tabs pb={"0px"}>
+									<TabList borderBottomColor={border} borderBottom="1px">
+										<Stack
+											direction="row"
+											spacing="20px"
+											w="100%"
+											pl={5}
+											pr={5}
+											pt={2}
+											pb={2}
+										>
+											<CustomTab>Сегодня</CustomTab>
+											<CustomTab>Завтра</CustomTab>
+										</Stack>
+									</TabList>
+									<TabPanels>
+										<TabPanel padding={0}>
+											{(todayLessons !== null && (
+												<>
+													{todayLessons.length === 0 && (
+														<Center paddingTop={5} paddingBottom={5}>
+															<Text
+																color="rgba(187, 187, 187, 1)"
+																fontWeight="bold"
+															>
+																Уроков не найдено
+															</Text>
+														</Center>
+													)}
+													{todayLessons.map((item: any, key: number) => (
+														<Lesson
+															lesson={item}
+															isLast={
+																key + 1 === todayLessons.length ? true : false
+															}
+														/>
+													))}
+												</>
+											)) || (
+												<>
+													{[1, 2, 3, 4, 5, 6].map((key) => (
 														<Stack
 															direction="column"
 															spacing="1px"
-															m="20px"
-															mt="10px"
-															mb="10px"
+															id={key.toString()}
 														>
-															<SkeletonText noOfLines={2} />
+															<Stack
+																direction="column"
+																spacing="1px"
+																m="20px"
+																mt="10px"
+																mb="10px"
+															>
+																<SkeletonText noOfLines={2} />
+															</Stack>
+															{key !== 6 && (
+																<Divider opacity="1" borderColor={border} />
+															)}
 														</Stack>
-														{key !== 6 && (
-															<Divider opacity="1" borderColor={border} />
-														)}
-													</Stack>
-												))}
-											</>
-										)}
-									</TabPanel>
-									<TabPanel padding={0}>
-										{(tomorrowLessons !== null && (
-											<>
-												{tomorrowLessons.length === 0 && (
-													<Center paddingTop={5} paddingBottom={5}>
-														<Text
-															color="rgba(187, 187, 187, 1)"
-															fontWeight="bold"
-														>
-															Уроков не найдено
-														</Text>
-													</Center>
-												)}
-												{tomorrowLessons.map((item: any, key: number) => (
-													<Lesson
-														lesson={item}
-														isLast={
-															key + 1 === tomorrowLessons.length ? true : false
-														}
-													/>
-												))}
-											</>
-										)) || (
-											<>
-												{[1, 2, 3, 4, 5, 6].map((key) => (
-													<Stack
-														direction="column"
-														spacing="1px"
-														id={key.toString()}
-													>
+													))}
+												</>
+											)}
+										</TabPanel>
+										<TabPanel padding={0}>
+											{(tomorrowLessons !== null && (
+												<>
+													{tomorrowLessons.length === 0 && (
+														<Center paddingTop={5} paddingBottom={5}>
+															<Text
+																color="rgba(187, 187, 187, 1)"
+																fontWeight="bold"
+															>
+																Уроков не найдено
+															</Text>
+														</Center>
+													)}
+													{tomorrowLessons.map((item: any, key: number) => (
+														<Lesson
+															lesson={item}
+															isLast={
+																key + 1 === tomorrowLessons.length
+																	? true
+																	: false
+															}
+														/>
+													))}
+												</>
+											)) || (
+												<>
+													{[1, 2, 3, 4, 5, 6].map((key) => (
 														<Stack
 															direction="column"
 															spacing="1px"
-															m="20px"
-															mt="10px"
-															mb="10px"
+															id={key.toString()}
 														>
-															<SkeletonText noOfLines={2} />
+															<Stack
+																direction="column"
+																spacing="1px"
+																m="20px"
+																mt="10px"
+																mb="10px"
+															>
+																<SkeletonText noOfLines={2} />
+															</Stack>
+															{key !== 6 && (
+																<Divider opacity="1" borderColor={border} />
+															)}
 														</Stack>
-														{key !== 6 && (
-															<Divider opacity="1" borderColor={border} />
-														)}
-													</Stack>
-												))}
-											</>
-										)}
-									</TabPanel>
-								</TabPanels>
-							</Tabs>
-						</Stack>
-					</Box>
-					{(news !== null && (
-						<>
-							{(news.length !== 0 && (
-								<Stack w={["100%", "65%"]} direction="column" spacing="20px">
-									{news.map((item: any) => (
-										<NewsBlock item={item} />
-									))}
-								</Stack>
-							)) || (
-								<Center w={["100%", "65%"]}>
-									<Text color="rgba(187, 187, 187, 1)" fontWeight="bold">
-										Новостей не найдено
-									</Text>
-								</Center>
-							)}
-						</>
-					)) || (
-						<Stack w={["100%", "65%"]} direction="column" spacing="20px">
-							{[1, 2, 3, 4, 5, 6, 7].map((key) => (
-								<NewsBlock
-									item={{
-										type: "Post",
-										content: {
-											id: key,
-											title: "Загрузка",
-											text: "Загрузка",
-											topicLogoUrl: "Загрузка",
-										},
-									}}
-									isLoading
-								/>
-							))}
-						</Stack>
-					)}
-				</Stack>
+													))}
+												</>
+											)}
+										</TabPanel>
+									</TabPanels>
+								</Tabs>
+							</Stack>
+						</Box>
+						{(news !== null && (
+							<>
+								{(news.length !== 0 && (
+									<Stack w={["100%", "65%"]} direction="column" spacing="20px">
+										{news.map((item: any) => (
+											<NewsBlock item={item} />
+										))}
+									</Stack>
+								)) || (
+									<Center w={["100%", "65%"]}>
+										<Text color="rgba(187, 187, 187, 1)" fontWeight="bold">
+											Новостей не найдено
+										</Text>
+									</Center>
+								)}
+							</>
+						)) || (
+							<Stack w={["100%", "65%"]} direction="column" spacing="20px">
+								{[1, 2, 3, 4, 5, 6, 7].map((key) => (
+									<NewsBlock
+										item={{
+											type: "Post",
+											content: {
+												id: key,
+												title: "Загрузка",
+												text: "Загрузка",
+												topicLogoUrl: "Загрузка",
+											},
+										}}
+										isLoading
+									/>
+								))}
+							</Stack>
+						)}
+					</Stack>
+				</PullToRefresh>
 			)}
 		</>
 	);
